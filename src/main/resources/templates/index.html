@@ -7,20 +7,11 @@
     </style>
 </head>
 <body>
-<h1>WebSocket Demo.</h1>
-<h1>WebSocket Demo..</h1>
-<h1>WebSocket Demo...</h1>
-<input type="button" onclick="websocket.send('666666666')" value="点我发消息"/>
+<input type="button" onclick="webSocketInit()" value="点我开启链接"/>
+<input type="button" onclick="websocket.send('测试')" value="点我发消息"/>
 </body>
 <script type="application/javascript">
-  var websocket = {
-    send: function (str) {
-    }
-  };
-  window.onload = function () {
-    if (!'WebSocket' in window) return;
-    webSocketInit();
-  };
+  var websocket;
   function webSocketInit() {
     websocket = new WebSocket("ws://127.0.0.1:8080/websocket");
     //成功建立连接

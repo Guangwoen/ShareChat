@@ -50,7 +50,11 @@ public class WebSocketService {
         // 向数据库保存信息
 
         System.out.println("onMessage sessionId is:" + session.getId());
-
+        try{
+            sendMessage("OK");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         // 转发消息
     }
 
