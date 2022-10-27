@@ -41,4 +41,9 @@ public class MessageController {
     public List<Message> getBySenderId(@PathVariable String id) {
         return messageRepository.findBySenderId(id);
     }
+
+    @GetMapping("/getMyAll")
+    public List<Message> getMyAll() {
+        return messageRepository.findMyALl();
+    }
 }
