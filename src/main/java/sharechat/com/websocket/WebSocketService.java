@@ -14,7 +14,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 public class WebSocketService {
     private static int onlineCount = 0;
 
-    private static CopyOnWriteArraySet<WebSocketService> webSocketServices = new CopyOnWriteArraySet<WebSocketService>();
+    private static final CopyOnWriteArraySet<WebSocketService> webSocketServices = new CopyOnWriteArraySet<WebSocketService>();
 
     private Session session;
 

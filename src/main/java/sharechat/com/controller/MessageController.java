@@ -14,7 +14,12 @@ public class MessageController {
     @Autowired
     private MessageRepository messageRepository;
 
-    @PostMapping("/add")
+    /**
+     * 接收客户端发送的信息
+     * @param message 发送的消息
+     * @return 是否成功
+     * */
+    @PostMapping("/message")
     public int saveMessage(@RequestBody Message message) {
         String id = message.getChannelId();
         if(id == null || id.length() == 0) {
@@ -31,18 +36,17 @@ public class MessageController {
         messageRepository.save(msg);
         return 1;
     }
-
-    @GetMapping("/getAll")
+    @GetMapping("/all")
     public List<Message> getMessages() {
         return messageRepository.findAll();
     }
 
-    @GetMapping("/getById/{id}")
+    @GetMapping("/id/{id}")
     public List<Message> getBySenderId(@PathVariable String id) {
         return messageRepository.findBySenderId(id);
     }
 
-    @GetMapping("/getMyAll")
+    @GetMapping("/all/my")
     public List<Message> getMyAll() {
         return messageRepository.findMyALl();
     }
