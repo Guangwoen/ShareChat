@@ -14,10 +14,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public class WebSocketService {
     private static int onlineCount = 0;
 
+    // 存储用户与服务器的每个对话
     private static final ConcurrentHashMap<String, Session> webSocketServices
             = new ConcurrentHashMap<>();
-
-    String str = "";
 
     @OnOpen
     public void onOpen(@PathParam("sender") String sender,

@@ -15,26 +15,27 @@ public class MessageController {
     private MessageRepository messageRepository;
 
     /**
-     * 接收客户端发送的信息
+     * 保存客户端发送的信息(POST)
+     *
      * @param message 发送的消息
      * @return 是否成功
      * */
-    @PostMapping("/message")
-    public int saveMessage(@RequestBody Message message) {
+    @RequestMapping(value = "/message", method = RequestMethod.POST)
+    public Message saveMessage(@RequestBody Message message) {
         String id = message.getChannelId();
         if(id == null || id.length() == 0) {
             System.out.println("<<报错>>: 空channelId");
-            return -1;
+            return null;
         }
         String sender = message.getSenderId();
         if(sender == null || sender.length() == 0) {
             System.out.println("<<报错>>: 空senderId");
-            return -1;
+            return null;
         }
         Message msg = new Message(id, sender,
                 Instant.now(), message.getMsgBody());
         messageRepository.save(msg);
-        return 1;
+        return msg;
     }
     @GetMapping("/all")
     public List<Message> getMessages() {

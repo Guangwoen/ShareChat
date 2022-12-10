@@ -1,9 +1,5 @@
 spring:
-  data:
-    cassandra:
-      keyspace-name: scbase
-      contact-points: 127.0.0.1
-      port: 9042
-      local-datacenter: datacenter1
-      username: sharechat
-      password: sharechat542
+  profiles:
+    active: dev
+
+# java -jar xxx.jar --spring.profiles.active=test
