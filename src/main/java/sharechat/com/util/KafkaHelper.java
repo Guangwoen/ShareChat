@@ -3,6 +3,7 @@ package sharechat.com.util;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Properties;
 
 
@@ -10,7 +11,7 @@ import java.util.Properties;
 public class KafkaHelper extends Thread {
     private KafkaConsumer<String, String> consumer;
 
-    private String topic = "test.topic";
+    private final String topic = "test.topic";
 
     public KafkaHelper() {}
 
@@ -27,7 +28,7 @@ public class KafkaHelper extends Thread {
 
         // 创建消费者对象
         consumer = new KafkaConsumer<String, String>(props);
-        consumer.subscribe(Arrays.asList(this.topic));
+        consumer.subscribe(Collections.singletonList(this.topic));
 
     }
 }

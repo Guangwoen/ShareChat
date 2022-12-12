@@ -17,3 +17,5 @@ spring:
   devtools:
     restart:
       enabled: true
+  jpa:
+    show-sql: true
