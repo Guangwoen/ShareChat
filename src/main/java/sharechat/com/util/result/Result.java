@@ -1,7 +1,12 @@
 package sharechat.com.util.result;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.Serializable;
 
+@Getter
+@Setter
 public class Result<T> implements Serializable {
     private static final long serialVersionUID = -3960261604605958516L;
 
@@ -125,30 +130,6 @@ public class Result<T> implements Serializable {
 
     private Result(ResultCode resultCode, T data) {
         this(resultCode);
-        this.data = data;
-    }
-
-    public int getCode() {
-        return code;
-    }
-
-    public void setCode(int code) {
-        this.code = code;
-    }
-
-    public String getMsg() {
-        return msg;
-    }
-
-    public void setMsg(String msg) {
-        this.msg = msg;
-    }
-
-    public T getData() {
-        return data;
-    }
-
-    public void setData(T data) {
         this.data = data;
     }
 }
