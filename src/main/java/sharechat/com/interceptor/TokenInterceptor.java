@@ -17,9 +17,9 @@ public class TokenInterceptor implements HandlerInterceptor {
         // 在此判断是否登陆
         String token = request.getHeader("token");
         // 验证token的正确性
-        if(!StringUtils.hasLength(token)){
+        /*if(!StringUtils.hasLength(token)){
             throw new BizException(9001, "token不能为空");
-        }
+        }*/
         return true;
     }
 
