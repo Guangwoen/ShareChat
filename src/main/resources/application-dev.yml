@@ -19,3 +19,8 @@ spring:
       enabled: true
   jpa:
     show-sql: true
+  neo4j:
+    uri: neo4j://localhost:7687
+    authentication:
+      username: neo4j
+      password: ecnu542_

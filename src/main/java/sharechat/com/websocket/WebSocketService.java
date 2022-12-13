@@ -6,7 +6,6 @@ import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
@@ -14,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class WebSocketService {
     private static int onlineCount = 0;
 
-    // 存储用户与服务器的每个对话
+    // 临时存储用户与服务器的每个对话
     private static final ConcurrentHashMap<String, Session> webSocketServices
             = new ConcurrentHashMap<>();
 
@@ -46,8 +45,6 @@ public class WebSocketService {
         // 数据库查找
         // 向数据库保存信息
 
-
-
         try{
             sendMessage(message, sender, receiver);
         } catch (IOException e) {
@@ -68,23 +65,30 @@ public class WebSocketService {
      * @param receiver 消息接收对象
      * */
     public void sendMessage(String message, String sender, String receiver) throws IOException {
-        webSocketServices.get(receiver+'|'+sender)
-                .getBasicRemote().sendText("来自"+sender+"的信息:" + message);
+        boolean isReceiverOnFace = webSocketServices.containsKey(receiver+"|"+sender);
+        if(isReceiverOnFace) {
+            webSocketServices.get(receiver+'|'+sender)
+                    .getBasicRemote().sendText("来自"+sender+"的信息:" + message);
+        }
+        else {
+
+        }
     }
 
     /**
      * 群发消息
      * */
     public void sendInfo(String message) throws IOException {
-        Collections.list(webSocketServices.keys()).forEach( item -> {
+        /*Collections.list(webSocketServices.keys()).forEach( item -> {
             String[] users = item.split("\\|");
             try {
+                System.out.println("INFO:: " + users[0] + " " + users[1]);
                 sendMessage(message, users[0], users[1]);
             }
             catch (IOException e) {
                 return;
             }
-        });
+        });*/
     }
 
     public static synchronized int getOnlineCount() {

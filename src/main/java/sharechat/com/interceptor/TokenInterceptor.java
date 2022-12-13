@@ -1,10 +1,8 @@
 package sharechat.com.interceptor;
 
 import org.springframework.lang.NonNull;
-import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
-import sharechat.com.util.exception.BizException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>webSocket</title>
+    <style type="text/css">
+    </style>
 </head>
 <body>
 Welcome<br/><label for="text"></label><input id="text" type="text"/>
@@ -18,7 +20,7 @@ Welcome<br/><label for="text"></label><input id="text" type="text"/>
   var websocket = null;
   //判断当前浏览器是否支持WebSocket
   if ('WebSocket' in window) {
-    websocket = new WebSocket("ws://localhost:8080/websocket/test3/2/test1");
+    websocket = new WebSocket("ws://localhost:8080/websocket/test3/2/test2");
   }
   else {
     alert('当前浏览器不支持websocket')
