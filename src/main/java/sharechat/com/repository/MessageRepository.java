@@ -25,6 +25,24 @@ public interface MessageRepository extends CassandraRepository<Message, String> 
      *
      * @return 消息列表
      * */
-    @Query("select * from message")
+    @Query("select * from chat_message")
     List<Message> findMyALl();
+
+    /**
+     * 获取离线消息
+     *
+     * @param channelId 消息框Id
+     * @return 消息列表
+     * */
+    @Query("select * from chat_message where channelid = ?0 and isreceived = false ALLOW FILTERING")
+    List<Message> findOffLineMessage(String channelId);
+
+    /**
+     * 更新isReceived值
+     *
+     * @param msgId 消息id
+     * @param value 目标布尔值
+     * */
+    @Query("update chat_message set isreceived = ?1 where msgid = ?0")
+    void updateIsReceived(String msgId, boolean value);
 }
