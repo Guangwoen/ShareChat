@@ -223,7 +223,6 @@ export default {
         description: "乐",
         address: '上海市普陀区'
       }
-      alert(this.user.userId)
       //获取在线用户
       this.users=[{
         userId:"1",
