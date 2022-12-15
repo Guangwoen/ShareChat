@@ -66,8 +66,8 @@ export default {
       })*/
     // id（邮箱）,用户名, 学校/公司, 年龄, 性别，头像, 地址（省/市）,个性签名（个人描述）, 待定:（朋友圈）
     this.friendLists=[{
-      userId:"146895172@qq.com",
-      username:"tyrion",
+      userId:"1",
+      username:"1",
       organization:"华东师范大学",
       age:12,
       gender:"male",
@@ -75,8 +75,8 @@ export default {
       description:"乐",
       address: '上海市普陀区'
     }, {
-      userId:"144895172@qq.com",
-      username:"mbt",
+      userId:"2",
+      username:"2",
       organization:"华东师范大学",
       age:12,
       gender:"male",
@@ -84,8 +84,8 @@ export default {
       description:"乐",
       address: '上海市普陀区'
     }, {
-      userId:"144695172@qq.com",
-      username:"cgy",
+      userId:"3",
+      username:"3",
       organization:"华东师范大学",
       age:12,
       gender:"male",
@@ -93,8 +93,8 @@ export default {
       description:"乐",
       address: '上海市普陀区'
     }, {
-      userId:"144685172@qq.com",
-      username:"lsw",
+      userId:"4",
+      username:"4",
       organization:"华东师范大学",
       age:12,
       gender:"male",

@@ -222,11 +222,12 @@ export default {
         avatar: "https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png",
         description: "乐",
         address: '上海市普陀区'
-      };
+      }
+      alert(this.user.userId)
       //获取在线用户
       this.users=[{
-        userId:"1216776075@qq.com",
-        username:"tyrion",
+        userId:"1",
+        username:"1",
         organization:"华东师范大学",
         age:12,
         gender:"male",
@@ -234,8 +235,8 @@ export default {
         description:"乐",
         address: '上海市普陀区'
       }, {
-        userId:"1446895172@qq.com",
-        username:"mbt",
+        userId:"2",
+        username:"2",
         organization:"华东师范大学",
         age:12,
         gender:"male",
@@ -243,8 +244,8 @@ export default {
         description:"乐",
         address: '上海市普陀区'
       }, {
-        userId:"144695172@qq.com",
-        username:"cgy",
+        userId:"3",
+        username:"3",
         organization:"华东师范大学",
         age:12,
         gender:"male",
@@ -252,8 +253,8 @@ export default {
         description:"乐",
         address: '上海市普陀区'
       }, {
-        userId:"144685172@qq.com",
-        username:"lsw",
+        userId:"4",
+        username:"4",
         organization:"华东师范大学",
         age:12,
         gender:"male",
