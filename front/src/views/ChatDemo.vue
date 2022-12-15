@@ -1,265 +1,3 @@
-<!--
-<template>
-  <div class="chat-box">
-    <header>聊天室人数：{{count}}</header>
-    <div class="msg-box" ref="msg-box">
-      <div
-          v-for="(i,index) in list"
-          :key="index"
-          class="msg"
-          :style="i.userId === userId?'flex-direction:row-reverse':''"
-      >
-        <div class="user-head">
-          <div
-              class="head"
-              :style="` background: hsl(${getUserHead(i.userId,'bck')}, 88%, 62%); clip-path:polygon(${getUserHead(i.userId,'polygon')}% 0,100% 100%,0% 100%); transform: rotate(${getUserHead(i.userId,'rotate')}deg)`"
-          ></div>
-        </div>
-        <div class="user-msg">
-          <span
-              :style="i.userId === userId?'float: right':''"
-              :class="i.userId === userId?'right':'left'"
-          >{{i.content}}</span>
-        </div>
-      </div>
-    </div>
-    <div class="input-box">
-      <input type="text" ref="sendMsg" v-model="contentText" @keyup.enter="sendText()" />
-      <div class="btn" :class="{['btn-active']:contentText}" @click="sendText()">发送</div>
-    </div>
-  </div>
-</template>
-
-<script>
-export default {
-  name:"ChatDemo",
-  data() {
-    return {
-      ws: null,
-      count: 0,
-      userId: null, //当前用户ID
-      list: [], //聊天记录的数组
-      contentText: "", //input输入的值
-    };
-  },
-  created() {
-    this.getUserID();
-  },
-  mounted() {
-    this.initWebSocket();
-  },
-  methods: {
-    //根据时间戳作为当前用户ID
-    getUserID() {
-      this.userId = new Date().getTime();
-    },
-    //根据userID生成一个随机头像
-    getUserHead(id, type) {
-      let ID = String(id);
-      if (type === "bck") {
-        return Number(ID.substring(ID.length - 3));
-      }
-      if (type === "polygon") {
-        return Number(ID.substring(ID.length - 2));
-      }
-      if (type === "rotate") {
-        return Number(ID.substring(ID.length - 3));
-      }
-    },
-    //滚动条到底部
-    scrollBottom() {
-      let el = this.$refs["msg-box"];
-      el.scrollTop = el.scrollHeight;
-    },
-    //发送聊天信息
-    sendText() {
-      let _this = this;
-      _this.$refs["sendMsg"].focus();
-      if (!_this.contentText) {
-        return;
-      }
-      let params = {
-        userId: _this.userId,
-        msg: _this.contentText,
-      };
-      _this.ws.send(JSON.stringify(params)); //调用WebSocket send()发送信息的方法
-      _this.contentText = "";
-      setTimeout(() => {
-        _this.scrollBottom();
-      }, 500);
-    },
-    //进入页面创建websocket连接
-    initWebSocket() {
-      let _this = this;
-      //判断页面有没有存在websocket连接
-      if (window.WebSocket) {
-        // 此处的 :8181 端口号 要与后端配置的一致
-        // let ws = new WebSocket("ws://192.168.5.42:9502");
-        let ws = new WebSocket("ws://localhost:8181"); //这里是我本地测试
-        _this.ws = ws;
-        ws.onopen = function (e) {
-          console.log("服务器连接成功");
-        };
-        ws.onclose = function (e) {
-          console.log("服务器连接关闭");
-        };
-        ws.onerror = function () {
-          console.log("服务器连接出错");
-        };
-        ws.onmessage = function (e) {
-          //接收服务器返回的数据
-          let resData = JSON.parse(e.data);
-          if (resData.funName === "userCount") {
-            _this.count = resData.users;
-            _this.list = resData.chat;
-          } else {
-            _this.list = [
-              ..._this.list,
-              { userId: resData.userId, content: resData.msg },
-            ];
-          }
-        };
-      }
-    },
-  },
-};
-</script>
-
-<style lang="scss" scoped>
-.chat-box {
-  margin: 0 auto;
-  background: #fafafa;
-  position: absolute;
-  height: 100%;
-  width: 100%;
-  // max-width: 700px;
-  header {
-    position: fixed;
-    width: 100%;
-    height: 3rem;
-    background: #409eff;
-    // max-width: 700px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-weight: bold;
-    color: white;
-    font-size: 1rem;
-  }
-  .msg-box {
-    position: absolute;
-    height: calc(100% - 6.5rem);
-    width: 100%;
-    margin-top: 3rem;
-    overflow-y: scroll;
-    .msg {
-      width: 95%;
-      min-height: 2.5rem;
-      margin: 1rem 0.5rem;
-      position: relative;
-      display: flex;
-      justify-content: flex-start !important;
-      .user-head {
-        min-width: 2.5rem;
-        width: 20%;
-        width: 2.5rem;
-        height: 2.5rem;
-        border-radius: 50%;
-        background: #f1f1f1;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        .head {
-          width: 1.2rem;
-          height: 1.2rem;
-        }
-        // position: absolute;
-      }
-      .user-msg {
-        width: 80%;
-        // position: absolute;
-        word-break: break-all;
-        position: relative;
-        z-index: 5;
-        span {
-          display: inline-block;
-          padding: 0.5rem 0.7rem;
-          border-radius: 0.5rem;
-          margin-top: 0.2rem;
-          font-size: 0.88rem;
-        }
-        .left {
-          background: white;
-          animation: toLeft 0.5s ease both 1;
-        }
-        .right {
-          background: #53a8ff;
-          color: white;
-          animation: toright 0.5s ease both 1;
-        }
-        @keyframes toLeft {
-          0% {
-            opacity: 0;
-            transform: translateX(-10px);
-          }
-          100% {
-            opacity: 1;
-            transform: translateX(0px);
-          }
-        }
-        @keyframes toright {
-          0% {
-            opacity: 0;
-            transform: translateX(10px);
-          }
-          100% {
-            opacity: 1;
-            transform: translateX(0px);
-          }
-        }
-      }
-    }
-  }
-  .input-box {
-    padding: 0 0.5rem;
-    position: absolute;
-    bottom: 0;
-    width: 97%;
-    height: 3.5rem;
-    background: #fafafa;
-    box-shadow: 0 0 5px #ccc;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    input {
-      height: 2.3rem;
-      display: inline-block;
-      width: 100%;
-      padding: 0.5rem;
-      border: none;
-      border-radius: 0.2rem;
-      font-size: 0.88rem;
-    }
-    .btn {
-      height: 2.3rem;
-      min-width: 4rem;
-      background: #e0e0e0;
-      padding: 0.5rem;
-      font-size: 0.88rem;
-      color: white;
-      text-align: center;
-      border-radius: 0.2rem;
-      margin-left: 0.5rem;
-      transition: 0.5s;
-      line-height: 2.3rem;
-    }
-    .btn-active {
-      background: #409eff;
-    }
-  }
-}
-</style>
--->
 <template>
   <div>
     <el-row>
@@ -271,7 +9,7 @@ export default {
             <span style="font-size: medium">{{ user.username }}</span>
             <i class="el-icon-chat-dot-round" style="margin-left: 10px; font-size: 16px; cursor: pointer"
                @click="selectFriend(user)"></i>
-            <span style="font-size: 12px;color: limegreen; margin-left: 5px" v-if="user.username === chatUser">chatting...</span>
+<!--            <span style="font-size: 12px;color: limegreen; margin-left: 5px" v-if="user.username === chatUser">chatting...</span>-->
           </div>
         </el-card>
         <el-divider></el-divider>
@@ -335,7 +73,7 @@ import Bus from "@/assets/Bus";
 // import request from "@/utils/request";
 
 import MayLike from "@/components/friend/MayLike";
-let socket;
+let socket;//websocket
 
 export default {
   name: "ChatDemo",
@@ -380,10 +118,10 @@ export default {
         else
           this.createContent(this.user, null, texts[i])
       }
+      this.initSocket()//初始化websocket
     },
     send() {
       const time = new Date();
-
       if (this.$store.state.curFriend.userId===undefined) {
         this.$message({type: 'warning', message: "请选择聊天对象"})
         return;
@@ -434,13 +172,45 @@ export default {
             "    <div class=\"tip right\">" + texts + "</div>\n" +
             "  </div>\n" +
             "</div>";
-      }
+      }//渲染消息到页面
       console.log(html)
       this.content += html;
       this.$nextTick(() => {//将聊天框高度拉到最低
         let msg = document.getElementById('interact') // 获取对象
         msg.scrollTop = msg.scrollHeight // 滚动高度
       })
+    },
+    //创建websocket
+    initSocket(){
+      if (typeof (WebSocket) == "undefined") {
+        console.log("您的浏览器不支持WebSocket");
+      } else {
+        console.log("您的浏览器支持WebSocket");
+        let socketUrl = "ws://localhost:8888/websocket/"+this.user.userId+"/2/"+this.$store.state.curFriend.userId;
+        if (socket != null) {
+          socket.close();
+          socket = null;
+        }
+        // 开启一个websocket服务
+        socket = new WebSocket(socketUrl);
+        //打开事件
+        socket.onopen = function () {
+          console.log("websocket已打开");
+        };
+        //  浏览器端收消息，获得从服务端发送过来的文本消息
+        socket.onmessage = function (msg) {
+          console.log("收到数据====" + msg)
+          this.createContent(this.$store.state.curFriend, null, msg)
+        };
+        //关闭事件
+        socket.onclose = function () {
+          console.log("websocket已关闭");
+        };
+        //发生了错误事件
+        socket.onerror = function () {
+          console.log("websocket发生了错误");
+        }
+      }
     },
     init() {
       this.user={
@@ -453,9 +223,45 @@ export default {
         description: "乐",
         address: '上海市普陀区'
       };
-      let username = this.user.username;
-      let _this = this;
-      if (typeof (WebSocket) == "undefined") {
+      //获取在线用户
+      this.users=[{
+        userId:"1216776075@qq.com",
+        username:"tyrion",
+        organization:"华东师范大学",
+        age:12,
+        gender:"male",
+        avatar:"https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png",
+        description:"乐",
+        address: '上海市普陀区'
+      }, {
+        userId:"1446895172@qq.com",
+        username:"mbt",
+        organization:"华东师范大学",
+        age:12,
+        gender:"male",
+        avatar:"https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png",
+        description:"乐",
+        address: '上海市普陀区'
+      }, {
+        userId:"144695172@qq.com",
+        username:"cgy",
+        organization:"华东师范大学",
+        age:12,
+        gender:"male",
+        avatar:"https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png",
+        description:"乐",
+        address: '上海市普陀区'
+      }, {
+        userId:"144685172@qq.com",
+        username:"lsw",
+        organization:"华东师范大学",
+        age:12,
+        gender:"male",
+        avatar:"https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png",
+        description:"乐",
+        address: '上海市普陀区'
+      }]
+      /*if (typeof (WebSocket) == "undefined") {
         console.log("您的浏览器不支持WebSocket");
       } else {
         console.log("您的浏览器支持WebSocket");
@@ -483,9 +289,9 @@ export default {
         socket.onerror = function () {
           console.log("websocket发生了错误");
         }
-      }
+      }*/
     },
-    initDemo(){
+    /*initDemo(){
       this.user={
         userId: this.$store.state.info.userId,
         username: "御坂美琴",
@@ -535,7 +341,7 @@ export default {
         address: '上海市普陀区'
       }]
       this.chatUser=this.$store.state.curFriend
-    }
+    }*/
   }
 }
 
