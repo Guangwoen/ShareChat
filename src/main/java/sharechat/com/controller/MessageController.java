@@ -1,6 +1,5 @@
 package sharechat.com.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import sharechat.com.entity.Message;
 import sharechat.com.repository.MessageRepository;
@@ -17,6 +16,7 @@ public class MessageController {
     private final SnowflakeHelper idGenerator;
 
     private final MessageRepository messageRepository;
+
 
     public MessageController(MessageRepository messageRepository, SnowflakeHelper snowflakeHelper) {
         this.messageRepository = messageRepository;

@@ -275,13 +275,13 @@ export default {
           </div>
         </el-card>
         <el-divider></el-divider>
-        <div class="block" style="width: 400px; height: 100px">
-          <el-carousel indicator-position="outside" trigger="click" height="250px" width="100%" :autoplay="false">
-            <el-carousel-item v-for="item in 4" :key="item">
-              <div style="height: 350px; overflow:auto; border-top: 1px solid #ccc" v-html="content"></div>
-            </el-carousel-item>
-          </el-carousel>
-        </div>
+<!--        <div class="block" style="width: 400px; height: 100px">-->
+<!--          <el-carousel indicator-position="outside" trigger="click" height="250px" width="100%" :autoplay="false">-->
+<!--            <el-carousel-item v-for="item in 4" :key="item">-->
+<!--              <div style="height: 350px; overflow:auto; border-top: 1px solid #ccc" v-html="content"></div>-->
+<!--            </el-carousel-item>-->
+<!--          </el-carousel>-->
+<!--        </div>-->
       </el-col>
       <el-col :span="10">
         <div style="width: 800px; margin: 0 auto; background-color: white;
@@ -354,8 +354,8 @@ export default {
     }
   },
   created() {
-    // this.init()
-    this.initDemo()
+    this.init()
+    // this.initDemo()
   },
   mounted() {
     Bus.$on('sendmsg',user=>{
@@ -399,9 +399,9 @@ export default {
           console.log("您的浏览器支持WebSocket");
           // 组装待发送的消息 json
           // {"from": "zhang", "to": "admin", "text": "聊天文本"}
-          /*let message = {from: this.user.userId, to: this.$store.state.curFriend.userId, text: this.text}
-          socket.send(JSON.stringify(message));  // 将组装好的json发送给服务端，由服务端进行转发*/
-          this.messages.push({user: this.user.userId, text: this.text})
+          console.log(socket)
+          socket.send(this.text);  // 将组装好的json发送给服务端，由服务端进行转发
+          // this.messages.push({user: this.user.userId, text: this.text})
 
           // 构建消息内容，本人消息
           this.createContent(null, this.user, this.text)
@@ -443,14 +443,23 @@ export default {
       })
     },
     init() {
-      this.user = sessionStorage.getItem("user") ? JSON.parse(sessionStorage.getItem("user")) : {}
+      this.user={
+        userId: this.$store.state.info.userId,
+        username: "御坂美琴",
+        organization: "常盘台中学",
+        age: 12,
+        gender: "female",
+        avatar: "https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png",
+        description: "乐",
+        address: '上海市普陀区'
+      };
       let username = this.user.username;
       let _this = this;
       if (typeof (WebSocket) == "undefined") {
         console.log("您的浏览器不支持WebSocket");
       } else {
         console.log("您的浏览器支持WebSocket");
-        let socketUrl = "ws://localhost:9090/websocket/user1/2/user2/" + username;
+        let socketUrl = "ws://localhost:8888/websocket/"+this.user.userId+"/2/"+this.$store.state.curFriend.userId;
         if (socket != null) {
           socket.close();
           socket = null;
@@ -463,20 +472,8 @@ export default {
         };
         //  浏览器端收消息，获得从服务端发送过来的文本消息
         socket.onmessage = function (msg) {
-          console.log("收到数据====" + msg.data)
-          let data = JSON.parse(msg.data)  // 对收到的json数据进行解析， 类似这样的： {"users": [{"username": "zhang"},{ "username": "admin"}]}
-          if (data.users) {  // 获取在线人员信息
-            _this.users = data.users.filter(user => user.username !== username)  // 获取当前连接的所有用户信息，并且排除自身，自己不会出现在自己的聊天列表里
-          } else {
-            // 如果服务器端发送过来的json数据 不包含 users 这个key，那么发送过来的就是聊天文本json数据
-            //  // {"from": "zhang", "text": "hello"}
-            if (data.from === _this.chatUser) {
-              _this.messages.push(data)
-              // 构建消息内容
-              // _this.createContent(data.from, null, data.text)
-              _this.createContent(this.$store.state.curFriend, null, data.text)
-            }
-          }
+          console.log("收到数据====" + msg)
+          _this.createContent(this.$store.state.curFriend, null, msg)
         };
         //关闭事件
         socket.onclose = function () {
@@ -501,7 +498,7 @@ export default {
       };
       //获取好友列表,获取最近聊天者以初始化聊天页面
       this.users=[{
-        userId:"146895172@qq.com",
+        userId:"1216776075@qq.com",
         username:"tyrion",
         organization:"华东师范大学",
         age:12,

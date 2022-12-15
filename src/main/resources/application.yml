@@ -1,5 +1,4 @@
 spring:
   profiles:
     active: dev
-
 # java -jar xxx.jar --spring.profiles.active=test

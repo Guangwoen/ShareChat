@@ -24,3 +24,5 @@ spring:
     authentication:
       username: neo4j
       password: ecnu542_
+server:
+  port: 8888
