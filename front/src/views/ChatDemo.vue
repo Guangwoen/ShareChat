@@ -76,6 +76,7 @@ import MayLike from "@/components/friend/MayLike";
 let socket;//websocket
 
 export default {
+
   name: "ChatDemo",
   components: {MayLike},
   data() {
@@ -162,6 +163,7 @@ export default {
             "  </div>\n" +
             "</div>";
       } else if (remoteUser) {   // remoteUser表示远程用户聊天消息，蓝色的气泡
+        console.log("flag: " + texts)
         html = "<div class=\"el-row\" style=\"padding: 5px 0\">\n" +
             "  <div class=\"el-col el-col-2\" style=\"text-align: right\">\n" +
             "  <span class=\"el-avatar el-avatar--circle\" style=\"height: 40px; width: 40px; line-height: 40px;\">\n" +
@@ -182,6 +184,7 @@ export default {
     },
     //创建websocket
     initSocket(){
+      let this_ = this
       if (typeof (WebSocket) == "undefined") {
         console.log("您的浏览器不支持WebSocket");
       } else {
@@ -199,8 +202,8 @@ export default {
         };
         //  浏览器端收消息，获得从服务端发送过来的文本消息
         socket.onmessage = function (msg) {
-          console.log("收到数据====" + msg)
-          this.createContent(this.$store.state.curFriend, null, msg)
+          console.log("收到数据====" + msg.data)
+          this_.createContent(true, null, msg.data)
         };
         //关闭事件
         socket.onclose = function () {
