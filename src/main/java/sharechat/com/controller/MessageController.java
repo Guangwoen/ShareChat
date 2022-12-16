@@ -2,11 +2,15 @@ package sharechat.com.controller;
 
 import org.springframework.web.bind.annotation.*;
 import sharechat.com.entity.Message;
+import sharechat.com.service.FriendService;
 import sharechat.com.service.MessageService;
 import sharechat.com.util.result.Result;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/message")
@@ -14,8 +18,12 @@ public class MessageController {
 
     private final MessageService messageService;
 
-    public MessageController(MessageService messageService) {
+    private final FriendService friendService;
+
+    public MessageController(MessageService messageService,
+                             FriendService friendService) {
         this.messageService = messageService;
+        this.friendService = friendService;
     }
 
     /**
@@ -42,14 +50,17 @@ public class MessageController {
         return Result.success(msg);
     }
 
+    /**
+     * 根据id查询是否存在未读消息
+     * */
     @GetMapping(value = "/alarm")
     public Result<Boolean> hasAlarm(String id) {
         return Result.success(messageService.isMissingInRedis(id) || messageService.isMissingInDB(id));
     }
 
     @GetMapping(value = "/list")
-    public Result<Message> getListById(String id) {
-        return null;
+    public Result<List<Map<String, ?>>> getListById(String id) {
+        return Result.success(messageService.getLatestMessageList(id));
     }
 
     @GetMapping("/all")

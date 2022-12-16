@@ -14,7 +14,7 @@
         </el-menu-item-group>
       </el-submenu>
       <el-menu-item index="2">
-        <i class="el-icon-user-solid" @click="drawer = true"></i>
+        <i class="el-icon-linkNode-solid" @click="drawer = true"></i>
         <span slot="title">联系人</span>
       </el-menu-item>
       <el-menu-item index="3">

@@ -9,7 +9,7 @@
             <div style="width: 100%;height: 450px;border:1px solid #000000;border-radius: 5px;overflow-y:auto;margin-bottom: 10px">
               <div v-for="(item,index) in msgList" :key="index">
                 <!--                {{item.from}}{{item.msg}}{{item.time}}-->
-                <div align="right" v-if="item.from===user" style="color: dodgerblue">{{item.time}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{item.msg}}<el-tag size="mini">{{item.from}}</el-tag></div>
+                <div align="right" v-if="item.from===linkNode" style="color: dodgerblue">{{item.time}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{item.msg}}<el-tag size="mini">{{item.from}}</el-tag></div>
                 <div align="left" v-else style="color: coral"><el-tag size="mini" type="danger">{{item.from}}</el-tag>{{item.msg}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{item.time}}</div>
               </div>
             </div>
@@ -29,7 +29,7 @@ export default {
   data() {
     return {
       // 登录用户
-      user: '',
+      linkNode: '',
       // 消息记录列表
       msgList: [],
       // 发送的消息
@@ -46,8 +46,8 @@ export default {
   methods: {
     init() {
       // 如果sessionStorage中没有用户信息，则跳转登录页面
-      // this.user = sessionStorage.getItem('user')
-      // if (!this.user) {
+      // this.linkNode = sessionStorage.getItem('linkNode')
+      // if (!this.linkNode) {
       //   this.$router.push('/')
       // }
       let that = this;
@@ -55,7 +55,7 @@ export default {
         console.log("您的浏览器不支持WebSocket");
       } else {
         console.log("您的浏览器支持WebSocket");
-        let socketUrl = "ws://localhost:8888/socket/" + this.user;
+        let socketUrl = "ws://localhost:8888/socket/" + this.linkNode;
         if (socket != null) {
           socket.close();
           socket = null;
@@ -99,7 +99,7 @@ export default {
           console.log("您的浏览器不支持WebSocket");
         } else {
           console.log("您的浏览器支持WebSocket");
-          this.message.from=this.user;
+          this.message.from=this.linkNode;
           this.message.time=new Date().toLocaleTimeString();
           socket.send(JSON.stringify(this.message));
           this.message.msg = '';

@@ -1,20 +1,21 @@
 package sharechat.com.controller;
 
 import org.springframework.web.bind.annotation.*;
-import sharechat.com.entity.User;
-import sharechat.com.repository.FriendRelationRepository;
+import sharechat.com.entity.LinkNode;
+import sharechat.com.service.FriendService;
 import sharechat.com.util.result.Result;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/friend")
 public class FriendController {
 
-    private final FriendRelationRepository friendRelationRepository;
+    private final FriendService friendService;
 
-    public FriendController(FriendRelationRepository friendRelationRepository) {
-        this.friendRelationRepository = friendRelationRepository;
+    public FriendController(FriendService friendService) {
+        this.friendService = friendService;
     }
 
     /* TODO 1. 发送好友申请
@@ -25,11 +26,23 @@ public class FriendController {
     /**
      * 存储一个用户
      *
-     * @param user 请求体
+     * @param linkNode 请求体
      * */
-    @PostMapping("/user")
-    public Result<User> saveThis(@RequestBody User user) {
+    @PostMapping("/node")
+    public Result<LinkNode> saveThis(@RequestBody LinkNode linkNode) {
         /* TODO 向MySQL添加更详细的用户数据 */
-        return Result.success(friendRelationRepository.save(user));
+        return Result.success(friendService.save(linkNode));
+    }
+
+    @PostMapping("/new")
+    public Result<String> makeLink(@RequestBody Map params) {
+        return Result.success(friendService.makeLink(
+                (String) params.get("n1"),
+                (String) params.get("n2")));
+    }
+
+    @PostMapping("/friends")
+    public Result<List<LinkNode>> getMyFriends(@RequestBody Map name) {
+        return Result.success(friendService.getAllFriend((String)name.get("name")));
     }
 }

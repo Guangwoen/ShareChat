@@ -26,16 +26,48 @@ public interface MessageRepository extends CassandraRepository<Message, String> 
      * @param channelId 消息框Id
      * @return 消息列表
      * */
-    @Query("select * from chat_message where channelid = ?0 and isreceived = false ALLOW FILTERING")
+    @Query("select * from chatting where channelid = ?0 and isreceived = false ALLOW FILTERING")
     List<Message> findOffLineMessage(String channelId);
 
     /**
-     * 根据接收者id获取离线消息
+     * 根据channelid获取前100条信息
      *
      * @param channelId 聊天框id
      * */
-    @Query("select * from chat_message where channelid like ?0 and isreceived = false ALLOW FILTERING")
-    List<Message> findOffLineMessageByReceiver(String channelId);
+    @Query("select * from chatting where channelid = ?0 limit 100")
+    List<Message> findMessagesByChannelId(String channelId);
+
+    /**
+     * 根据channelid获取最新的一条信息
+     *
+     * @param channelId 聊天框id
+     * */
+    @Query("select * from chatting where channelid = ?0 limit 1 ALLOW FILTERING")
+    Message findMessagesByChannelIdLatestFull(String channelId);
+
+    /**
+     * 根据channelid获取最新的一条信息（通配符）
+     *
+     * @param channeldId 聊天框id
+     * */
+    @Query("select * from chatting where channelid like ?0 limit 1")
+    Message findMessageByChannelIdLatest(String channeldId);
+
+    /**
+     * 根据channelid获取离线消息（通配符）
+     *
+     * @param channelId 聊天框id
+     * */
+    @Query("select * from chatting where channelid like ?0 and isreceived = false ALLOW FILTERING")
+    List<Message> findOffLineMessagesByChannelId(String channelId);
+
+    /**
+     * 根据channelid获取离线消息
+     *
+     * @param channelId 聊天框id
+     * */
+    @Query("select * from chatting where channelid = ?0 and isreceived = false ALLOW FILTERING")
+    List<Message> findOffLineMessagesByChannelIdFull(String channelId);
 
     /**
      * 更新isReceived值
@@ -43,6 +75,6 @@ public interface MessageRepository extends CassandraRepository<Message, String> 
      * @param msgId 消息id
      * @param value 目标布尔值
      * */
-    @Query("update chat_message set isreceived = ?1 where msgid = ?0")
+    @Query("update chatting set isreceived = ?1 where msgid = ?0")
     void updateIsReceived(String msgId, boolean value);
 }

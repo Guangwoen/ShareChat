@@ -20,19 +20,19 @@
         </el-tooltip>
       </el-breadcrumb-item>
       <el-breadcrumb-item>
-        <el-avatar id="avatar" size="middle" :src="user.avatar"/>
+        <el-avatar id="avatar" size="middle" :src="linkNode.avatar"/>
       </el-breadcrumb-item>
     </el-breadcrumb>
     <el-dialog :visible.sync="dialogVisible" width="30%" >
 <!--      利用props传入用户信息-->
-      <UserInfo :UserInfo="user" v-show="change"></UserInfo>
+      <UserInfo :UserInfo="linkNode" v-show="change"></UserInfo>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" size="small" @click="changeInfo">修改资料</el-button>
       </span>
     </el-dialog>
 <!--    修改信息表单-->
     <el-dialog :visible.sync="formVisible" width="30%">
-      <ChangeInfo :UserInfo="user" :formVisible="formVisible" @childVisible="parentVisible"/>
+      <ChangeInfo :UserInfo="linkNode" :formVisible="formVisible" @childVisible="parentVisible"/>
     </el-dialog>
 <!--    查找用户-->
     <el-dialog :visible.sync="searchVisible" width="30%">
@@ -81,7 +81,7 @@ export default {
       size: '',
       dialogVisible: false,
       // id（邮箱）,用户名, 学校/公司, 年龄, 性别，头像, 地址（省/市）,个性签名（个人描述）, 待定:（朋友圈）
-      user:{
+      linkNode:{
         userId:"",//邮箱
         username:"",//用户名
         organization:"",//学校/公司
@@ -151,7 +151,7 @@ export default {
     showUserInfo(){
       this.dialogVisible = true
       //初始化用户信息
-      this.user = {
+      this.linkNode = {
         userId: this.$store.state.info.userId,
         username: "御坂美琴",
         organization: "常盘台中学",
@@ -161,8 +161,8 @@ export default {
         description: "乐",
         address: '上海市普陀区'
       };
-      // axios.get('https://localhost:8081/'+this.user.userId).then(function (res){
-      //   this.user=res.data
+      // axios.get('https://localhost:8081/'+this.linkNode.userId).then(function (res){
+      //   this.linkNode=res.data
       // }).catch(function (error){
       //   console.log(error)
       // })
@@ -173,7 +173,7 @@ export default {
   },
 
   mounted() {
-    this.user.userId=this.$store.state.info.userId
+    this.linkNode.userId=this.$store.state.info.userId
   }
 }
 </script>

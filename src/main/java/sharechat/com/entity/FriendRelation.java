@@ -1,6 +1,5 @@
 package sharechat.com.entity;
 
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.neo4j.core.schema.*;
@@ -16,15 +15,15 @@ public class FriendRelation {
     private String name = "FRIEND_OF";
 
     @TargetNode
-    private User user1;
+    private LinkNode linkNode1;
 
     @TargetNode
-    private User user2;
+    private LinkNode linkNode2;
 
-    public FriendRelation(Long Id, String name, User user1, User user2) {
+    public FriendRelation(Long Id, String name, LinkNode linkNode1, LinkNode linkNode2) {
         this.Id = Id;
         this.name = name;
-        this.user1 = user1;
-        this.user2 = user2;
+        this.linkNode1 = linkNode1;
+        this.linkNode2 = linkNode2;
     }
 }

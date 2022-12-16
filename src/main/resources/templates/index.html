@@ -9,7 +9,7 @@
 <body>
 Welcome<br/><label for="text"></label><input id="text" type="text"/>
 <br/>
-请指定用户<br/><label for="user"></label><input id="user" type="text"/>
+请指定用户<br/><label for="linkNode"></label><input id="linkNode" type="text"/>
 <button onclick="send()">发送消息</button>
 <hr/>
 <button onclick="openWebSocket()">开启WebSocket连接</button>
@@ -19,7 +19,7 @@ Welcome<br/><label for="text"></label><input id="text" type="text"/>
 </body>
 <script type="application/javascript">
   var websocket = null;
-  var user = document.getElementById("user");
+  var linkNode = document.getElementById("linkNode");
   //判断当前浏览器是否支持WebSocket
 
   //将消息显示在网页上
@@ -34,7 +34,7 @@ Welcome<br/><label for="text"></label><input id="text" type="text"/>
 
   function openWebSocket() {
     if ('WebSocket' in window) {
-        websocket = new WebSocket("ws://localhost:8888/websocket/test1/2/" + user.value);
+        websocket = new WebSocket("ws://localhost:8888/websocket/test1/2/" + linkNode.value);
       //连接发生错误的回调方法
       websocket.onerror = function () {
         setMessageInnerHTML("WebSocket连接发生错误");

@@ -4,12 +4,12 @@
       <el-col :span="8">
         <el-card style="width: 400px; height: 100%; color: #333">
           <div style="padding-bottom: 10px; border-bottom: 1px solid #ccc">在线用户</div>
-          <div style="padding: 10px 0" v-for="user in users" :key="user.username">
-            <el-avatar v-show="user.userId" id="avatar" size="small" :src="user.avatar" style="margin-top: 10px;margin-left: 10px"/>
-            <span style="font-size: medium">{{ user.username }}</span>
+          <div style="padding: 10px 0" v-for="linkNode in users" :key="linkNode.username">
+            <el-avatar v-show="linkNode.userId" id="avatar" size="small" :src="linkNode.avatar" style="margin-top: 10px;margin-left: 10px"/>
+            <span style="font-size: medium">{{ linkNode.username }}</span>
             <i class="el-icon-chat-dot-round" style="margin-left: 10px; font-size: 16px; cursor: pointer"
-               @click="selectFriend(user)"></i>
-<!--            <span style="font-size: 12px;color: limegreen; margin-left: 5px" v-if="user.username === chatUser">chatting...</span>-->
+               @click="selectFriend(linkNode)"></i>
+<!--            <span style="font-size: 12px;color: limegreen; margin-left: 5px" v-if="linkNode.username === chatUser">chatting...</span>-->
           </div>
         </el-card>
         <el-divider></el-divider>
@@ -83,7 +83,7 @@ export default {
     return {
       shareVisible:false,
       circleUrl: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
-      user: {},
+      linkNode: {},
       isCollapse: false,
       users: [],//好友
       chatUser: {},
@@ -97,8 +97,8 @@ export default {
     // this.initDemo()
   },
   mounted() {
-    Bus.$on('sendmsg',user=>{
-      this.selectFriend(user)
+    Bus.$on('sendmsg',linkNode=>{
+      this.selectFriend(linkNode)
     })
   },
   methods: {
@@ -108,16 +108,16 @@ export default {
     shareChat(){
       this.shareVisible=true
     },
-    selectFriend(user){
-      this.$store.state.curFriend = user
+    selectFriend(linkNode){
+      this.$store.state.curFriend = linkNode
       this.content=''
       //获得消息记录
       let texts=["嘿","你丫瞅什么呢","是我","你爹","对了","要不要来我的妙妙屋"];
       for (let i = 0; i < texts.length; i++) {
         if (i%2===0)
-          this.createContent(null, this.user, texts[i])
+          this.createContent(null, this.linkNode, texts[i])
         else
-          this.createContent(this.user, null, texts[i])
+          this.createContent(this.linkNode, null, texts[i])
       }
       this.initSocket()//初始化websocket
     },
@@ -140,10 +140,10 @@ export default {
           // {"from": "zhang", "to": "admin", "text": "聊天文本"}
           console.log(socket)
           socket.send(this.text);  // 将组装好的json发送给服务端，由服务端进行转发
-          // this.messages.push({user: this.user.userId, text: this.text})
+          // this.messages.push({linkNode: this.linkNode.userId, text: this.text})
 
           // 构建消息内容，本人消息
-          this.createContent(null, this.user, this.text)
+          this.createContent(null, this.linkNode, this.text)
           this.text = '';
         }
       }
@@ -189,7 +189,7 @@ export default {
         console.log("您的浏览器不支持WebSocket");
       } else {
         console.log("您的浏览器支持WebSocket");
-        let socketUrl = "ws://localhost:8888/websocket/"+this.user.userId+"/2/"+this.$store.state.curFriend.userId;
+        let socketUrl = "ws://localhost:8888/websocket/"+this.linkNode.userId+"/2/"+this.$store.state.curFriend.userId;
         if (socket != null) {
           socket.close();
           socket = null;
@@ -216,7 +216,7 @@ export default {
       }
     },
     init() {
-      this.user={
+      this.linkNode={
         userId: this.$store.state.info.userId,
         username: "御坂美琴",
         organization: "常盘台中学",
@@ -268,7 +268,7 @@ export default {
         console.log("您的浏览器不支持WebSocket");
       } else {
         console.log("您的浏览器支持WebSocket");
-        let socketUrl = "ws://localhost:8888/websocket/"+this.user.userId+"/2/"+this.$store.state.curFriend.userId;
+        let socketUrl = "ws://localhost:8888/websocket/"+this.linkNode.userId+"/2/"+this.$store.state.curFriend.userId;
         if (socket != null) {
           socket.close();
           socket = null;
@@ -295,7 +295,7 @@ export default {
       }*/
     },
     /*initDemo(){
-      this.user={
+      this.linkNode={
         userId: this.$store.state.info.userId,
         username: "御坂美琴",
         organization: "常盘台中学",
