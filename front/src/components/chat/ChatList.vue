@@ -63,7 +63,7 @@ export default {
       _this.friendLists=res.data.data
       let demo="2022-06-14T09:36:41.180127"
       let now=moment.utc().local().format('HH:mm:ss')//当前时间
-      alert(_this.friendLists.length)
+      // alert(_this.friendLists.length)
       for (let i = 0; i < _this.friendLists.length; i++) {
         let fri=_this.friendLists[i]
         if(fri.time===null){
