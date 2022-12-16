@@ -1,5 +1,6 @@
 package sharechat.com.websocket;
 
+import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import sharechat.com.entity.Message;
@@ -22,12 +23,12 @@ public class WebSocketService {
 
     private final MessageRepository messageRepository;
 
-    private final RedisTemplate redisTemplate;
+    private final RedisTemplate<String, ?> redisTemplate;
 
     private final SnowflakeHelper idGenerator;
 
     public WebSocketService(MessageRepository messageRepository,
-                            RedisTemplate redisTemplate,
+                            RedisTemplate<String, ?> redisTemplate,
                             SnowflakeHelper snowflakeHelper) {
         this.messageRepository = messageRepository;
         this.redisTemplate = redisTemplate;
@@ -40,7 +41,7 @@ public class WebSocketService {
     private static final ConcurrentHashMap<String, Session> webSocketServices
             = new ConcurrentHashMap<>();
 
-    private String makeKey(String a, String b) { return a+"|"+b; }
+    private String makeKey(String a, String b) { return a+"_"+b; }
 
     @OnOpen
     public void onOpen(@PathParam("sender") String sender,
@@ -49,17 +50,18 @@ public class WebSocketService {
                        EndpointConfig config) throws IOException {
         webSocketServices.put(makeKey(sender, receiver), session);
         addOnlineCount();
+        ListOperations<String, Message> listOps = (ListOperations<String, Message>) redisTemplate.opsForList();
 
         /* 首先检查Redis中是否存在离线消息，之后再查询数据库 */
 
         /* 因为缓存中的信息比数据库中的信息更新，所以先获取缓存中的信息 */
-        List<String> msgList = redisTemplate.opsForList().range(makeKey(receiver, sender), 0, -1);
+        List<Message> msgList = listOps.range(makeKey(receiver, sender), 0, -1);
         if(msgList != null && msgList.size() != 0) {
-            for(String m: msgList) {
-                sendMessage(m, receiver, sender);
-                redisTemplate.opsForList().trim(makeKey(receiver, sender), 0, 0); // 从缓存中删除
-                redisTemplate.opsForList().leftPop(makeKey(receiver, sender));
+            for(Message m: msgList) {
+                sendMessage(m.getMsgBody(), receiver, sender);
             }
+            listOps.trim(makeKey(receiver, sender), 0, 0); // 从缓存中删除
+            listOps.leftPop(makeKey(receiver, sender));
         }
 
         /* 之后检查数据库中的信息 */
@@ -78,23 +80,15 @@ public class WebSocketService {
                         @PathParam("receiver") String receiver) {
         webSocketServices.remove(makeKey(sender, receiver));
         subOnlineCount();
+        ListOperations<String, Message> listOps = (ListOperations<String, Message>) redisTemplate.opsForList();
 
         /* 将Redis内的离线消息持久化 */
-        List<String> msgList = redisTemplate.opsForList().range(makeKey(sender, receiver), 0, -1);
+        List<Message> msgList = listOps.range(makeKey(sender, receiver), 0, -1);
         if(msgList != null && msgList.size() != 0) {
-            for(String m: msgList) {
-                messageRepository.save(new Message(
-                        String.valueOf(idGenerator.snowflakeId()),
-                        makeKey(sender, receiver),
-                        sender,
-                        Instant.now(),
-                        m,
-                        false
-                ));
-            }
+            messageRepository.saveAll(msgList);
         }
-        redisTemplate.opsForList().trim(makeKey(sender, receiver), 0, 0);
-        redisTemplate.opsForList().leftPop(makeKey(sender, receiver));
+        listOps.trim(makeKey(sender, receiver), 0, 0);
+        listOps.leftPop(makeKey(sender, receiver));
         System.out.println("一个链接关闭！"+sender+", 当前在线会话为:" + getOnlineCount());
     }
 
@@ -104,23 +98,27 @@ public class WebSocketService {
                           String message,
                           Session session) {
         System.out.println("来自客户端" + sender + "的消息:" + message);
+        ListOperations<String, Message> listOps = (ListOperations<String, Message>) redisTemplate.opsForList();
 
         boolean isReceiverOnFace = webSocketServices.containsKey(makeKey(receiver, sender));
         System.out.println("boolean: " + isReceiverOnFace);
         // 如果在对方离线的时候发送消息
+        Message newMsg = new Message(
+                String.valueOf(idGenerator.snowflakeId()),
+                makeKey(sender, receiver),
+                sender,
+                Instant.now().toString(),
+                message,
+                null
+        );
         if(!isReceiverOnFace) {
             System.out.println("is offline");
-            redisTemplate.opsForList().rightPush(makeKey(sender, receiver), message);
+            newMsg.setIsReceived(false);
+            listOps.rightPush(makeKey(sender, receiver), newMsg);
         }
         else {
-            messageRepository.save(new Message(
-                    String.valueOf(idGenerator.snowflakeId()),
-                    makeKey(sender, receiver),
-                    sender,
-                    Instant.now(),
-                    message,
-                    true
-            ));
+            newMsg.setIsReceived(true);
+            messageRepository.save(newMsg);
             try{
                 sendMessage(message, sender, receiver);
             } catch (IOException e) {
@@ -132,7 +130,7 @@ public class WebSocketService {
 
     @OnError
     public void onError(Session session, Throwable error) throws IOException {
-        // sendInfo("响应超时");
+        error.printStackTrace();
     }
 
     /**
@@ -151,7 +149,7 @@ public class WebSocketService {
      * */
     public void sendInfo(String message) throws IOException {
         Collections.list(webSocketServices.keys()).forEach(item -> {
-            String[] users = item.split("\\|");
+            String[] users = item.split("_");
             try {
                 System.out.println("INFO:: " + users[0] + " " + users[1]);
                 sendMessage(message, users[0], users[1]);

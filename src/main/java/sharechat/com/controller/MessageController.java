@@ -2,8 +2,7 @@ package sharechat.com.controller;
 
 import org.springframework.web.bind.annotation.*;
 import sharechat.com.entity.Message;
-import sharechat.com.repository.MessageRepository;
-import sharechat.com.util.SnowflakeHelper;
+import sharechat.com.service.MessageService;
 import sharechat.com.util.result.Result;
 
 import java.time.Instant;
@@ -13,14 +12,10 @@ import java.util.List;
 @RequestMapping("/api/message")
 public class MessageController {
 
-    private final SnowflakeHelper idGenerator;
+    private final MessageService messageService;
 
-    private final MessageRepository messageRepository;
-
-
-    public MessageController(MessageRepository messageRepository, SnowflakeHelper snowflakeHelper) {
-        this.messageRepository = messageRepository;
-        this.idGenerator = snowflakeHelper;
+    public MessageController(MessageService messageService) {
+        this.messageService = messageService;
     }
 
     /**
@@ -41,28 +36,34 @@ public class MessageController {
             System.out.println("<<报错>>: 空senderId");
             return Result.error("空senderId");
         }
-        Message msg = new Message(String.valueOf(idGenerator.snowflakeId()),
-                id, sender, Instant.now(), message.getMsgBody(), false);
-        messageRepository.save(msg);
+        Message msg = new Message(String.valueOf(messageService.getSnowflakeId()),
+                id, sender, Instant.now().toString(), message.getMsgBody(), false);
+        messageService.saveMsg(msg);
         return Result.success(msg);
     }
+
+    @GetMapping(value = "/alarm")
+    public Result<Boolean> hasAlarm(String id) {
+        return Result.success(messageService.isMissingInRedis(id) || messageService.isMissingInDB(id));
+    }
+
+    @GetMapping(value = "/list")
+    public Result<Message> getListById(String id) {
+        return null;
+    }
+
     @GetMapping("/all")
     public Result<List<Message>> getMessages() {
-        return Result.success(messageRepository.findAll());
+        return Result.success(messageService.findAllMsg());
     }
 
-    @GetMapping("/filter")
-    public Result<List<Message>> getFiltered() {
-        return Result.success(messageRepository.findOffLineMessage("test2|test1"));
-    }
-
-    @GetMapping("/message/{id}")
-    public Result<List<Message>> getBySenderId(@PathVariable String id) {
-        return Result.success(messageRepository.findBySenderId(id));
+    @GetMapping("/message")
+    public Result<List<Message>> getBySenderId(String id) {
+        return Result.success(messageService.findBySenderId(id));
     }
 
     @GetMapping("/all/my")
     public Result<List<Message>> getMyAll() {
-        return Result.success(messageRepository.findMyALl());
+        return Result.success(messageService.findAllMsg());
     }
 }

@@ -34,7 +34,7 @@ Welcome<br/><label for="text"></label><input id="text" type="text"/>
 
   function openWebSocket() {
     if ('WebSocket' in window) {
-      websocket = new WebSocket("ws://localhost:8080/websocket/test3/2/" + user.value);
+      websocket = new WebSocket("ws://localhost:8888/websocket/test3/2/" + user.value);
 
       //连接发生错误的回调方法
       websocket.onerror = function () {
