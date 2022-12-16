@@ -72,10 +72,10 @@ public class MessageService {
         Collections.sort(returnLst, (map1, map2) ->{
             String s1 = (String) map1.get("time");
             String s2 = (String) map2.get("time");
+            System.out.println(map1.get("userId")+"_"+map2.get("userId"));
             if(s1 != null && s2 != null) return s2.compareTo(s1);
-            if(s1 == null && s2 == null) return 0;
-            if(s1 == null) return -1;
-            return 1;
+            if(s1 == null) return 1;
+            return -1;
         });
         return returnLst;
     }

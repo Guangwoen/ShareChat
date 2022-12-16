@@ -59,8 +59,8 @@ export default {
         {params:{
                 userId: userId
       }}).then(function (res){
-        console.log(res.data)
-      _this.friendLists=res.data.friendLists
+        console.log(res.data.data)
+      _this.friendLists=res.data.data
     }).catch(function (error){
       console.log(error)
     })
@@ -108,7 +108,7 @@ export default {
     //处理时间字段
     let demo="2022-06-14T09:36:41.180127"
     let now=moment.utc().local().format('HH:mm:ss')//当前时间
-    alert(now)
+    // alert(now)
     this.friendLists.forEach(function (fri){
       let date=moment.utc(fri.time).local().format('YYYY-MM-DD')
       let time=moment.utc(fri.time).local().format('HH:mm:ss')
