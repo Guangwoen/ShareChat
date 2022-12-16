@@ -30,6 +30,7 @@
 <script>
 import Bus from "@/assets/Bus";
 import axios from "axios";
+import moment from 'moment'
 
 export default {
   name: "ChatList",
@@ -63,7 +64,7 @@ export default {
     }).catch(function (error){
       console.log(error)
     })
-    this.friendLists=[
+    /*this.friendLists=[
       {
         username:"1",
         userId:"1",
@@ -96,16 +97,27 @@ export default {
         time:new Date(),
         unread:4
       }
-    ]
+    ]*/
     //传回的用户时间字段格式？
     //按时间对用户聊天进行排序
-    this.friendLists.sort(function (fri1,fri2){
+    /*this.friendLists.sort(function (fri1,fri2){
       // return fri1.time-fri2.time
       return fri1.time.getTime()-fri2.time.getTime()
-    })
-    let now=new Date().getFullYear()+":"+new Date().getMonth()+":"+new Date().getDate()
+    })*/
+
     //处理时间字段
-    for (let i = 0; i < this.friendLists.length; i++) {
+    let demo="2022-06-14T09:36:41.180127"
+    let now=moment.utc().local().format('HH:mm:ss')//当前时间
+    alert(now)
+    this.friendLists.forEach(function (fri){
+      let date=moment.utc(fri.time).local().format('YYYY-MM-DD')
+      let time=moment.utc(fri.time).local().format('HH:mm:ss')
+      if(date<now)//今天之前
+        fri.time=date
+      else//今天
+        fri.time=time
+    })
+    /*for (let i = 0; i < this.friendLists.length; i++) {
       const fri=this.friendLists[i]
       let date=fri.time.getFullYear()+":"+fri.time.getMonth()+":"+fri.time.getDate()
       if (date<now){//早于今天，按年-月-日表示
@@ -115,7 +127,7 @@ export default {
       else {//今天，按时-分-秒表示
         this.friendLists[i].time=fri.time.getHours()+":"+fri.time.getMinutes()+":"+fri.time.getSeconds()
       }
-    }
+    }*/
   }
 }
 </script>
