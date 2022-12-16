@@ -69,7 +69,7 @@ public class WebSocketService {
         if(dbMsgList != null && dbMsgList.size() != 0) {
             for(Message m: dbMsgList) {
                 sendMessage(m.getMsgBody(), receiver, sender);
-                messageRepository.updateIsReceived(m.getMsgId(), true); // 重置字段
+                messageRepository.updateIsReceived(m.getMsgId(), m.getMsgsendTime(), m.getSenderId(), true); // 重置字段
             }
         }
         System.out.println("新连接: " + sender + ", 当前在线会话为:" + getOnlineCount());
@@ -141,7 +141,7 @@ public class WebSocketService {
      * */
     public void sendMessage(String message, String sender, String receiver) throws IOException {
         webSocketServices.get(makeKey(receiver, sender))
-                .getBasicRemote().sendText("来自"+sender+"的信息:" + message);
+                .getBasicRemote().sendText(message);
     }
 
     /**

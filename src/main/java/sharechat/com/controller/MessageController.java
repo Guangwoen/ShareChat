@@ -65,6 +65,12 @@ public class MessageController {
         return Result.success(messageService.getLatestMessageList(id));
     }
 
+    @GetMapping(value = "/recent")
+    public Result<List<Map<String, String>>> getRecent(@RequestParam("from") String id,
+                                           @RequestParam("to") String friendId) {
+        return Result.success(messageService.getRecentMessages(id, friendId));
+    }
+
     @GetMapping("/all")
     public Result<List<Message>> getMessages() {
         return Result.success(messageService.findAllMsg());

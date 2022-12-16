@@ -62,8 +62,7 @@ export default {
         console.log(res.data.data)
       _this.friendLists=res.data.data
       let demo="2022-06-14T09:36:41.180127"
-      let now=moment.utc().local().format('HH:mm:ss')//当前时间
-      // alert(_this.friendLists.length)
+      let now=moment.utc().local().format('YYYY-MM-DD')//当前时间
       for (let i = 0; i < _this.friendLists.length; i++) {
         let fri=_this.friendLists[i]
         if(fri.time===null){
@@ -71,7 +70,7 @@ export default {
           break;
         }
         let date=moment.utc(fri.time).local().format('YYYY-MM-DD')
-        let time=moment.utc(fri.time).local().format('HH:mm:ss')
+        let time=moment.utc(fri.time).local().format('HH:mm')
         if(date<now)//今天之前
           fri.time=date
         else//今天

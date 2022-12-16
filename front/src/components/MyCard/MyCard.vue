@@ -73,7 +73,7 @@ export default {
   created() {
     this.timer = window.setInterval(() => {
       setTimeout(this.getProjectList(), 0);
-    }, 10000);
+    }, 2000);
   },
   /*mounted() {
     this.timer = window.setInterval(() => {
@@ -97,8 +97,7 @@ export default {
         params:{
           userId: userId
         }}).then(function(res){
-          console.log(res.data)
-        if (res.data.flag){
+        if (res.data.data){
           _this.msgImg=require('@/assets/img/img2.png')
         }
       }).catch(function (error){

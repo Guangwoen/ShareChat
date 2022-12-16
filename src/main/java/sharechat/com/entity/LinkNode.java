@@ -18,6 +18,9 @@ public class LinkNode {
     @GeneratedValue
     private Long id;
 
+    @Property(name = "userId")
+    private String userId;
+
     @Property(name = "name")
     private String name;
 

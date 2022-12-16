@@ -44,7 +44,7 @@
 <!--    找到的用户信息-->
     <el-dialog :visible.sync="wantedVisible" width="40%" append-to-body>
       <!--      传递用户信息至该组件-->
-      <el-table :data="wantedUser" style="width: 100%" stripe>
+      <el-table :data="wantedUsers" style="width: 100%" stripe>
         <el-table-column>
           <template scope="scope">
             <p>{{scope.row.userId}}</p>
@@ -57,7 +57,8 @@
         </el-table-column>
         <el-table-column style="width: auto">
           <template scope="scope">
-            <el-button size="mini" @click="addFriend(scope.$index)">添加好友</el-button>
+            <el-button v-show="wantedUsers[scope.$index].flag" :disabled="wantedUsers[scope.$index].flag" size="mini">已关注</el-button>
+            <el-button v-show="!wantedUsers[scope.$index].flag" size="mini" @click="addFriend(scope.$index)">关注</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -76,7 +77,7 @@ export default {
     return{
       dotVisible:false,
       wantedVisible:false,
-      wantedUser:[],
+      wantedUsers:[],
       searchText:"",
       searchVisible:false,
       formVisible:false,
@@ -98,48 +99,28 @@ export default {
   },
   methods: {
     addFriend(index){
-
+      let _this=this
+      axios.get("http://127.0.0.1:8888/api/friend/new",{
+        params:{
+          userId:_this.$store.state.info.userId,
+          friendId:_this.wantedUsers[index].userId
+        }
+      })
+      this.wantedUsers[index].flag=true
     },
+    //查找用户
     search(){
       //传输用户ID或用户名
+      let _this=this
+      axios.get("http://127.0.0.1:8888/api/friend/match",{
+        params:{
+          userId:_this.$store.state.info.userId,
+          info:_this.searchText
+        }
+      }).then(function (res){
+        _this.wantedUsers=res.data.data
+      })
       this.searchText=""
-      this.wantedUser=[{
-        userId:"146895172@qq.com",
-        username:"tyrion",
-        organization:"华东师范大学",
-        age:12,
-        gender:"male",
-        avatar:"https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png",
-        description:"乐",
-        address: '上海市普陀区'
-      }, {
-        userId:"144895172@qq.com",
-        username:"mbt",
-        organization:"华东师范大学",
-        age:12,
-        gender:"male",
-        avatar:"https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png",
-        description:"乐",
-        address: '上海市普陀区'
-      }, {
-        userId:"144695172@qq.com",
-        username:"cgy",
-        organization:"华东师范大学",
-        age:12,
-        gender:"male",
-        avatar:"https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png",
-        description:"乐",
-        address: '上海市普陀区'
-      }, {
-        userId:"144685172@qq.com",
-        username:"lsw",
-        organization:"华东师范大学",
-        age:12,
-        gender:"male",
-        avatar:"https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png",
-        description:"乐",
-        address: '上海市普陀区'
-      }]
       this.searchVisible=false
       this.wantedVisible=true
     },

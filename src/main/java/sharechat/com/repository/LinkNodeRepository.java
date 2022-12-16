@@ -17,4 +17,17 @@ public interface LinkNodeRepository extends Neo4jRepository<LinkNode, Long> {
     @Query("match (a)-[:FRIEND]-(b) where a.name = $name " +
             "return b ")
     List<LinkNode> getFriendsByName(String name);
+
+    @Query("match (a)-[:FRIEND]-(b) where a.userId = $id " +
+            "return b")
+    List<LinkNode> getFriendsById(String id);
+
+    @Query("match (n1: LinkNode), (n2: LinkNode), p=(n1)-[]-(n2) " +
+            "where n1.userId = $userId and n2.userId = $friendId " +
+            "return count(p)")
+    Long isLinked(String userId, String friendId);
+
+    List<LinkNode> getLinkNodesByUserId(String userId);
+
+    List<LinkNode> getLinkNodesByName(String name);
 }

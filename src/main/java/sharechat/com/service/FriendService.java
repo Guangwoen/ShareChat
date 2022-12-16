@@ -25,6 +25,13 @@ public class FriendService {
         return a+"_"+b;
     }
 
+    public boolean isLinked(String userId, String friendId) {
+        Long linkCount = linkNodeRepository.isLinked(userId, friendId);
+        System.out.println(userId+"_"+friendId);
+        System.out.println(linkCount);
+        return linkCount != 0;
+    }
+
     /**
      * 根据Name获取所有朋友
      *
@@ -34,9 +41,21 @@ public class FriendService {
         return linkNodeRepository.getFriendsByName(name);
     }
 
-    public List<LinkNode> searchUser(String info) {
-        linkNodeRepository.getFriendsByName(info);
-        return null;
+    public List<Map<String, ?>> searchUser(String id, String info) {
+        List<LinkNode> nameList = linkNodeRepository.getLinkNodesByName(info);
+        List<LinkNode> idList = linkNodeRepository.getLinkNodesByUserId(info);
+        Set<LinkNode> nodeSet = new HashSet<>();
+        nodeSet.addAll(nameList);
+        nodeSet.addAll(idList);
+        List<Map<String, ?>> returnLst = new ArrayList<>();
+        for(LinkNode l: nodeSet) {
+            Map<String, Object> mapping = new HashMap<>();
+            mapping.put("userId", l.getUserId());
+            mapping.put("username", l.getName());
+            mapping.put("flag", isLinked(id, l.getUserId()));
+            returnLst.add(mapping);
+        }
+        return returnLst;
     }
 
 }

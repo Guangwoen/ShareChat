@@ -110,6 +110,23 @@ public class MessageService {
         return m2;
     }
 
+    public List<Map<String, String>> getRecentMessages(String myId, String friendId) {
+        List<Message> lst1 = messageRepository.findMessagesByChannelId(myId+"_"+friendId);
+        List<Message> lst2 = messageRepository.findMessagesByChannelId(friendId+"_"+myId);
+        List<Message> returnList = new ArrayList<>();
+        returnList.addAll(lst1);
+        returnList.addAll(lst2);
+        Collections.sort(returnList, Comparator.comparing(Message::getMsgsendTime));
+        List<Map<String, String>> content = new ArrayList<>();
+        for(Message m: returnList) {
+            Map<String, String> mapping = new HashMap<>();
+            mapping.put("messages", m.getMsgBody());
+            mapping.put("userId", m.getSenderId());
+            content.add(mapping);
+        }
+        return content;
+    }
+
     /**
      * 根据发送者获取信息
      *

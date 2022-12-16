@@ -115,22 +115,24 @@ export default {
       //获得消息记录，渲染聊天页面
       let _this=this
       axios.get(
-          "#",
+          "http://127.0.0.1:8888/api/message/recent",
           {params:{
           from:_this.$store.state.info.userId,
           to:_this.$store.state.curFriend.userId
         }}).then(function (res){
-        _this.messages=res.data.messages//接收消息记录
+          console.log(res.data.data)
+        _this.messages=res.data.data//接收消息记录
+        _this.messages.forEach(function (msg){
+          if (msg.userId===_this.$store.state.info.userId)//用户消息
+            _this.createContent(null, true, msg.messages)
+          else//朋友消息
+            _this.createContent(true, null, msg.messages)
+        })
       }).catch(function (error){
         console.log(error)
       })
-      //msg:{messags:"",userId:""}
-      this.messages.forEach(function (msg){
-        if (msg.userId===this.$store.state.info.userId)//用户消息
-          this.createContent(null, true, msg.message)
-        else//朋友消息
-          this.createContent(true, null, msg.message)
-      })
+      //msg:{messages:"",userId:""}
+
       /*let texts=["嘿","你丫瞅什么呢","是我","你爹","对了","要不要来我的妙妙屋"];
       for (let i = 0; i < texts.length; i++) {
         if (i%2===0)

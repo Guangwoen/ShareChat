@@ -25,8 +25,9 @@ public class FriendController {
     *       4. 获取推荐用户*/
 
     @GetMapping("/match")
-    public Result<List<LinkNode>> searchUser(@RequestParam String info) {
-        return null;
+    public Result<List<Map<String, ?>>> searchUser(@RequestParam("userId") String id,
+                                                   @RequestParam("info") String info) {
+        return Result.success(friendService.searchUser(id, info));
     }
 
     /**
@@ -40,11 +41,11 @@ public class FriendController {
         return Result.success(friendService.save(linkNode));
     }
 
-    @PostMapping("/new")
-    public Result<String> makeLink(@RequestBody Map params) {
-        return Result.success(friendService.makeLink(
-                (String) params.get("n1"),
-                (String) params.get("n2")));
+    @GetMapping("/new")
+    public Result<String> makeLink(@RequestParam("userId") String userid,
+                                   @RequestParam("friendId") String friendId) {
+        friendService.makeLink(userid, friendId);
+        return Result.success("success");
     }
 
     @PostMapping("/friends")
