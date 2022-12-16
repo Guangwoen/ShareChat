@@ -6,7 +6,9 @@
     <el-breadcrumb separator="">
       <el-breadcrumb-item>
           <el-tooltip content="通知" placement="bottom" effect="light">
-            <el-button class="button" icon="el-icon-message-solid" circle/>
+            <el-badge hidden="dotVisible" is-dot class="item">
+              <el-button class="button" icon="el-icon-message-solid" circle/>
+            </el-badge>
           </el-tooltip>
       </el-breadcrumb-item>
       <el-breadcrumb-item>
@@ -72,6 +74,7 @@ export default {
   components: {ChangeInfo, UserInfo},
   data(){
     return{
+      dotVisible:false,
       wantedVisible:false,
       wantedUser:[],
       searchText:"",
@@ -215,5 +218,8 @@ export default {
   padding: 40px 20px;
   box-sizing: border-box;
   margin-right: 20px;}
-
+.item {
+  margin-top: 0px;
+  margin-right: 0px;
+}
 </style>

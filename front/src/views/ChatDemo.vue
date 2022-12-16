@@ -4,12 +4,12 @@
       <el-col :span="8">
         <el-card style="width: 400px; height: 100%; color: #333">
           <div style="padding-bottom: 10px; border-bottom: 1px solid #ccc">在线用户</div>
-          <div style="padding: 10px 0" v-for="linkNode in users" :key="linkNode.username">
-            <el-avatar v-show="linkNode.userId" id="avatar" size="small" :src="linkNode.avatar" style="margin-top: 10px;margin-left: 10px"/>
-            <span style="font-size: medium">{{ linkNode.username }}</span>
+          <div style="padding: 10px 0" v-for="user in users" :key="user.username">
+            <el-avatar v-show="user.userId" id="avatar" size="small" :src="user.avatar" style="margin-top: 10px;margin-left: 10px"/>
+            <span style="font-size: medium">{{ user.username }}</span>
             <i class="el-icon-chat-dot-round" style="margin-left: 10px; font-size: 16px; cursor: pointer"
-               @click="selectFriend(linkNode)"></i>
-<!--            <span style="font-size: 12px;color: limegreen; margin-left: 5px" v-if="linkNode.username === chatUser">chatting...</span>-->
+               @click="selectFriend(user)"></i>
+<!--            <span style="font-size: 12px;color: limegreen; margin-left: 5px" v-if="user.username === chatUser">chatting...</span>-->
           </div>
         </el-card>
         <el-divider></el-divider>
@@ -73,6 +73,7 @@ import Bus from "@/assets/Bus";
 // import request from "@/utils/request";
 
 import MayLike from "@/components/friend/MayLike";
+import axios from "axios";
 let socket;//websocket
 
 export default {
@@ -83,7 +84,7 @@ export default {
     return {
       shareVisible:false,
       circleUrl: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
-      linkNode: {},
+      user: {},
       isCollapse: false,
       users: [],//好友
       chatUser: {},
@@ -97,8 +98,8 @@ export default {
     // this.initDemo()
   },
   mounted() {
-    Bus.$on('sendmsg',linkNode=>{
-      this.selectFriend(linkNode)
+    Bus.$on('sendmsg',user=>{
+      this.selectFriend(user)
     })
   },
   methods: {
@@ -108,17 +109,35 @@ export default {
     shareChat(){
       this.shareVisible=true
     },
-    selectFriend(linkNode){
-      this.$store.state.curFriend = linkNode
+    selectFriend(user){
+      this.$store.state.curFriend = user
       this.content=''
-      //获得消息记录
-      let texts=["嘿","你丫瞅什么呢","是我","你爹","对了","要不要来我的妙妙屋"];
+      //获得消息记录，渲染聊天页面
+      let _this=this
+      axios.get(
+          "#",
+          {params:{
+          from:_this.$store.state.info.userId,
+          to:_this.$store.state.curFriend.userId
+        }}).then(function (res){
+        _this.messages=res.data.messages//接收消息记录
+      }).catch(function (error){
+        console.log(error)
+      })
+      //msg:{messags:"",userId:""}
+      this.messages.forEach(function (msg){
+        if (msg.userId===this.$store.state.info.userId)//用户消息
+          this.createContent(null, true, msg.message)
+        else//朋友消息
+          this.createContent(true, null, msg.message)
+      })
+      /*let texts=["嘿","你丫瞅什么呢","是我","你爹","对了","要不要来我的妙妙屋"];
       for (let i = 0; i < texts.length; i++) {
         if (i%2===0)
-          this.createContent(null, this.linkNode, texts[i])
+          this.createContent(null, this.user, texts[i])
         else
-          this.createContent(this.linkNode, null, texts[i])
-      }
+          this.createContent(this.user, null, texts[i])
+      }*/
       this.initSocket()//初始化websocket
     },
     send() {
@@ -140,10 +159,9 @@ export default {
           // {"from": "zhang", "to": "admin", "text": "聊天文本"}
           console.log(socket)
           socket.send(this.text);  // 将组装好的json发送给服务端，由服务端进行转发
-          // this.messages.push({linkNode: this.linkNode.userId, text: this.text})
 
           // 构建消息内容，本人消息
-          this.createContent(null, this.linkNode, this.text)
+          this.createContent(null, this.user, this.text)
           this.text = '';
         }
       }
@@ -189,7 +207,7 @@ export default {
         console.log("您的浏览器不支持WebSocket");
       } else {
         console.log("您的浏览器支持WebSocket");
-        let socketUrl = "ws://localhost:8888/websocket/"+this.linkNode.userId+"/2/"+this.$store.state.curFriend.userId;
+        let socketUrl = "ws://localhost:8888/websocket/"+this.user.userId+"/2/"+this.$store.state.curFriend.userId;
         if (socket != null) {
           socket.close();
           socket = null;
@@ -216,7 +234,7 @@ export default {
       }
     },
     init() {
-      this.linkNode={
+      this.user={
         userId: this.$store.state.info.userId,
         username: "御坂美琴",
         organization: "常盘台中学",
@@ -268,7 +286,7 @@ export default {
         console.log("您的浏览器不支持WebSocket");
       } else {
         console.log("您的浏览器支持WebSocket");
-        let socketUrl = "ws://localhost:8888/websocket/"+this.linkNode.userId+"/2/"+this.$store.state.curFriend.userId;
+        let socketUrl = "ws://localhost:8888/websocket/"+this.user.userId+"/2/"+this.$store.state.curFriend.userId;
         if (socket != null) {
           socket.close();
           socket = null;
@@ -295,7 +313,7 @@ export default {
       }*/
     },
     /*initDemo(){
-      this.linkNode={
+      this.user={
         userId: this.$store.state.info.userId,
         username: "御坂美琴",
         organization: "常盘台中学",

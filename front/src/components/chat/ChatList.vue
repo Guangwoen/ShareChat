@@ -18,7 +18,9 @@
     </el-table-column>
     <el-table-column>
       <template scope="scope">
-        <el-button size="mini" @click="checkMessage(scope.$index)">查看</el-button>
+        <el-badge :is-dot="friendLists[scope.$index].unread" class="item">
+          <el-button size="mini" @click="checkMessage(scope.$index)">查看</el-button>
+        </el-badge>
       </template>
     </el-table-column>
   </el-table>
@@ -27,6 +29,7 @@
 
 <script>
 import Bus from "@/assets/Bus";
+import axios from "axios";
 
 export default {
   name: "ChatList",
@@ -34,12 +37,12 @@ export default {
     return{
       //朋友id，用户名和最后一条聊天记录
       friendLists:[],
-
     }
   },
   methods:{
     //查看信息
     checkMessage(index){
+      this.friendLists[index].unread=0
       Bus.$emit('sendmsg',this.friendLists[index])
       this.$emit('close')
     }
@@ -47,49 +50,68 @@ export default {
   computed:{
   },
   created() {
+    //获取消息列表
+    let _this=this
+    let userId=this.$store.state.info.userId
+    /*axios.get(
+        "#",
+        {params:{
+                userId: userId
+      }}).then(function (res){
+      _this.friendLists=res.data.friendLists
+    }).catch(function (error){
+      console.log(error)
+    })*/
     this.friendLists=[
       {
-        username:"tyrion",
-        userId:"146895172@qq.com",
+        username:"1",
+        userId:"1",
         avatar:"https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png",
         msg:"你好",//最后一条消息
-        time:new Date()
+        time:new Date(),
+        unread:0
       },
       {
-        username:"mbt",
-        userId:"144895172@qq.com",
+        username:"2",
+        userId:"2",
         avatar:"https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png",
         msg:"可以交个朋友吗",
-        time:new Date()
+        time:new Date(),
+        unread:2
       },
       {
-        username:"cgy",
-        userId:"144695172@qq.com",
+        username:"3",
+        userId:"3",
         avatar:"https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png",
         msg:"期待明天的见面",
-        time:new Date()
+        time:new Date(),
+        unread:3
       },
       {
-        username:"lsw",
-        userId:"144685172@qq.com",
+        username:"4",
+        userId:"4",
         avatar:"https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png",
         msg:"可以交个朋友吗",
-        time:new Date()
+        time:new Date(),
+        unread:4
       }
     ]
+    //传回的用户时间字段格式？
+    //按时间对用户聊天进行排序
     this.friendLists.sort(function (fri1,fri2){
       // return fri1.time-fri2.time
       return fri1.time.getTime()-fri2.time.getTime()
     })
     let now=new Date().getFullYear()+":"+new Date().getMonth()+":"+new Date().getDate()
+    //处理时间字段
     for (let i = 0; i < this.friendLists.length; i++) {
       const fri=this.friendLists[i]
       let date=fri.time.getFullYear()+":"+fri.time.getMonth()+":"+fri.time.getDate()
-      if (date<now){
+      if (date<now){//早于今天，按年-月-日表示
         const month=fri.time.getMonth+1
         this.friendLists[i].time=fri.time.getFullYear()+"-"+fri.time.getMonth()+"-"+fri.time.getDate()
       }
-      else {
+      else {//今天，按时-分-秒表示
         this.friendLists[i].time=fri.time.getHours()+":"+fri.time.getMinutes()+":"+fri.time.getSeconds()
       }
     }
@@ -98,5 +120,8 @@ export default {
 </script>
 
 <style scoped>
-
+.item {
+  margin-top: 10px;
+  margin-right: 40px;
+}
 </style>

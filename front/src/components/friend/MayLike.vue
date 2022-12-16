@@ -1,17 +1,14 @@
 <template>
   <div>
-
     <el-table :data="peopleList" stripe style="width: 100%">
       <el-table-column>
         <el-avatar id="avatar" size="large" :src="peopleList[this.index].avatar"/>
       </el-table-column>
-
       <el-table-column>
         <template scope="scope">
           <el-button slot="reference" type="text" @click="checkInfo(scope.$index)">{{scope.row.username}}</el-button>
         </template>
       </el-table-column>
-
       <el-table-column>
         <template scope="scope">
           <el-button size="mini" @click="makeFriends(scope.$index)">添加好友</el-button>
@@ -21,7 +18,6 @@
     <el-dialog :visible.sync="dialogVisible" width="30%" append-to-body>
       <!--      传递用户信息至该组件-->
       <UserInfo :UserInfo="peopleList[this.index]"></UserInfo>
-
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取消</el-button>
         <el-button type="primary" @click="dialogVisible = false">确定</el-button>
