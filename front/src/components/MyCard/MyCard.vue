@@ -93,10 +93,11 @@ export default {
       let _this=this
       let userId=this.$store.state.info.userId
       //函数内的this指向函数本身，因此要用_this指向this
-      axios.get('#',{
+      axios.get("http://127.0.0.1:8888/api/message/alarm",{
         params:{
           userId: userId
         }}).then(function(res){
+          console.log(res.data)
         if (res.data.flag){
           _this.msgImg=require('@/assets/img/img2.png')
         }

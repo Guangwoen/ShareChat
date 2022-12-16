@@ -54,12 +54,14 @@ public class MessageController {
      * 根据id查询是否存在未读消息
      * */
     @GetMapping(value = "/alarm")
-    public Result<Boolean> hasAlarm(String id) {
+    public Result<Boolean> hasAlarm(@RequestParam("userId") String id) {
+        System.out.println(id);
         return Result.success(messageService.isMissingInRedis(id) || messageService.isMissingInDB(id));
     }
 
     @GetMapping(value = "/list")
-    public Result<List<Map<String, ?>>> getListById(String id) {
+    public Result<List<Map<String, ?>>> getListById(@RequestParam("userId") String id) {
+        System.out.println(id);
         return Result.success(messageService.getLatestMessageList(id));
     }
 

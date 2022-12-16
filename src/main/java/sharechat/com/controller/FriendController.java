@@ -1,5 +1,6 @@
 package sharechat.com.controller;
 
+import cn.hutool.core.annotation.Link;
 import org.springframework.web.bind.annotation.*;
 import sharechat.com.entity.LinkNode;
 import sharechat.com.service.FriendService;
@@ -22,6 +23,11 @@ public class FriendController {
     *       2. 删除好友
     *       3. 接受好友申请
     *       4. 获取推荐用户*/
+
+    @GetMapping("/match")
+    public Result<List<LinkNode>> searchUser(@RequestParam String info) {
+        return null;
+    }
 
     /**
      * 存储一个用户

@@ -53,15 +53,16 @@ export default {
     //获取消息列表
     let _this=this
     let userId=this.$store.state.info.userId
-    /*axios.get(
-        "#",
+    axios.get(
+        "http://127.0.0.1:8888/api/message/list",
         {params:{
                 userId: userId
       }}).then(function (res){
+        console.log(res.data)
       _this.friendLists=res.data.friendLists
     }).catch(function (error){
       console.log(error)
-    })*/
+    })
     this.friendLists=[
       {
         username:"1",

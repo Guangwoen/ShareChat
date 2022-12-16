@@ -8,10 +8,7 @@ import sharechat.com.entity.Message;
 import sharechat.com.repository.MessageRepository;
 import sharechat.com.util.SnowflakeHelper;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class MessageService {
@@ -71,6 +68,15 @@ public class MessageService {
 
             returnLst.add(mp);
         }
+
+        Collections.sort(returnLst, (map1, map2) ->{
+            String s1 = (String) map1.get("time");
+            String s2 = (String) map2.get("time");
+            if(s1 != null && s2 != null) return s2.compareTo(s1);
+            if(s1 == null && s2 == null) return 0;
+            if(s1 == null) return -1;
+            return 1;
+        });
         return returnLst;
     }
 
@@ -94,7 +100,6 @@ public class MessageService {
             Message m2 = listOperations.leftPop(myId+"_"+friendId);
             return m1.getMsgsendTime().compareTo(m2.getMsgsendTime()) < 0 ? m2 : m1;
         }
-        System.out.println("Flag: " + myId + "_" + friendId);
         Message m1 = messageRepository.findMessagesByChannelIdLatestFull(myId+"_"+friendId);
         Message m2 = messageRepository.findMessagesByChannelIdLatestFull(friendId+"_"+myId);
         if(m1 != null && m2 != null) {

@@ -34,4 +34,9 @@ public class FriendService {
         return linkNodeRepository.getFriendsByName(name);
     }
 
+    public List<LinkNode> searchUser(String info) {
+        linkNodeRepository.getFriendsByName(info);
+        return null;
+    }
+
 }
