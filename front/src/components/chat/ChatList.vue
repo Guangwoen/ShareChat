@@ -61,55 +61,31 @@ export default {
       }}).then(function (res){
         console.log(res.data.data)
       _this.friendLists=res.data.data
+      let demo="2022-06-14T09:36:41.180127"
+      let now=moment.utc().local().format('HH:mm:ss')//当前时间
+      alert(_this.friendLists.length)
+      for (let i = 0; i < _this.friendLists.length; i++) {
+        let fri=_this.friendLists[i]
+        if(fri.time===null){
+          fri.time=""
+          break;
+        }
+        let date=moment.utc(fri.time).local().format('YYYY-MM-DD')
+        let time=moment.utc(fri.time).local().format('HH:mm:ss')
+        if(date<now)//今天之前
+          fri.time=date
+        else//今天
+          fri.time=time
+      }
     }).catch(function (error){
       console.log(error)
     })
-    /*this.friendLists=[
-      {
-        username:"1",
-        userId:"1",
-        avatar:"https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png",
-        msg:"你好",//最后一条消息
-        time:new Date(),
-        unread:0
-      },
-      {
-        username:"2",
-        userId:"2",
-        avatar:"https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png",
-        msg:"可以交个朋友吗",
-        time:new Date(),
-        unread:2
-      },
-      {
-        username:"3",
-        userId:"3",
-        avatar:"https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png",
-        msg:"期待明天的见面",
-        time:new Date(),
-        unread:3
-      },
-      {
-        username:"4",
-        userId:"4",
-        avatar:"https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png",
-        msg:"可以交个朋友吗",
-        time:new Date(),
-        unread:4
-      }
-    ]*/
-    //传回的用户时间字段格式？
-    //按时间对用户聊天进行排序
-    /*this.friendLists.sort(function (fri1,fri2){
-      // return fri1.time-fri2.time
-      return fri1.time.getTime()-fri2.time.getTime()
-    })*/
-
     //处理时间字段
-    let demo="2022-06-14T09:36:41.180127"
+    /*let demo="2022-06-14T09:36:41.180127"
     let now=moment.utc().local().format('HH:mm:ss')//当前时间
-    // alert(now)
+    alert(_this.friendLists.length)
     this.friendLists.forEach(function (fri){
+      alert("hello")
       let date=moment.utc(fri.time).local().format('YYYY-MM-DD')
       let time=moment.utc(fri.time).local().format('HH:mm:ss')
       if(date<now)//今天之前
@@ -117,16 +93,15 @@ export default {
       else//今天
         fri.time=time
     })
-    /*for (let i = 0; i < this.friendLists.length; i++) {
-      const fri=this.friendLists[i]
-      let date=fri.time.getFullYear()+":"+fri.time.getMonth()+":"+fri.time.getDate()
-      if (date<now){//早于今天，按年-月-日表示
-        const month=fri.time.getMonth+1
-        this.friendLists[i].time=fri.time.getFullYear()+"-"+fri.time.getMonth()+"-"+fri.time.getDate()
-      }
-      else {//今天，按时-分-秒表示
-        this.friendLists[i].time=fri.time.getHours()+":"+fri.time.getMinutes()+":"+fri.time.getSeconds()
-      }
+    for (let i = 0; i < this.friendLists.length; i++) {
+      let fri=this.friendLists[i]
+      alert("hello")
+      let date=moment.utc(fri.time).local().format('YYYY-MM-DD')
+      let time=moment.utc(fri.time).local().format('HH:mm:ss')
+      if(date<now)//今天之前
+        fri.time=date
+      else//今天
+        fri.time=time
     }*/
   }
 }
