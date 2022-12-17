@@ -37,7 +37,11 @@ public class FriendService {
     }
 
     public List<LinkNode> getRecommand(String userId) {
-        return linkNodeRepository.getRecommandById(userId);
+        List<LinkNode> recommand =  linkNodeRepository.getRecommandById(userId);
+        for(LinkNode l: recommand) {
+            if(isLinked(userId, l.getUserId())) recommand.remove(l);
+        }
+        return recommand;
     }
 
     /**

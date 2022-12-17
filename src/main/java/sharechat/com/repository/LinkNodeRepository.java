@@ -30,7 +30,7 @@ public interface LinkNodeRepository extends Neo4jRepository<LinkNode, Long> {
 
     @Query("match (n1:LinkNode), (n2:LinkNode), p=(n1)-[:BELONG]-()-[:BELONG]-(n2) " +
             "where n1.userId = $userId " +
-            "return n2")
+            "return n2 limit 10")
     List<LinkNode> getRecommandById(String userId);
 
     List<LinkNode> getLinkNodesByUserId(String userId);
