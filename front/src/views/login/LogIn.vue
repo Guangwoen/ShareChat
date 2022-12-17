@@ -53,7 +53,8 @@ export default {
           password:password
       }).then(res=>{
           if(res.data.data.result===true){
-            window.localStorage["token"] = JSON.stringify(res.data.data.token);
+            window.localStorage["token"] = res.data.data.token;
+            console.log(window.localStorage["token"])
             _this.$store.dispatch("setUserInfo",_this.form)
             _this.$router.push({
               path:'/shareChat'
