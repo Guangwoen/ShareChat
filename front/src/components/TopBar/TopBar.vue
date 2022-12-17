@@ -57,7 +57,7 @@
         </el-table-column>
         <el-table-column style="width: auto">
           <template scope="scope">
-            <el-button v-show="wantedUsers[scope.$index].flag" :disabled="wantedUsers[scope.$index].flag" size="mini">已关注</el-button>
+            <el-button v-show="wantedUsers[scope.$index].flag" disabled size="mini">已关注</el-button>
             <el-button v-show="!wantedUsers[scope.$index].flag" size="mini" @click="addFriend(scope.$index)">关注</el-button>
           </template>
         </el-table-column>

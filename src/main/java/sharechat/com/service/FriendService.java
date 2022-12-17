@@ -38,10 +38,11 @@ public class FriendService {
 
     public List<LinkNode> getRecommand(String userId) {
         List<LinkNode> recommand =  linkNodeRepository.getRecommandById(userId);
+        List<LinkNode> returnLst = new ArrayList<>();
         for(LinkNode l: recommand) {
-            if(isLinked(userId, l.getUserId())) recommand.remove(l);
+            if(!isLinked(userId, l.getUserId())) returnLst.add(l);
         }
-        return recommand;
+        return returnLst;
     }
 
     /**

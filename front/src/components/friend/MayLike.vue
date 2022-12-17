@@ -11,7 +11,7 @@
       </el-table-column>
       <el-table-column>
         <template scope="scope">
-          <el-button v-show="peopleList[scope.$index].flag" disabled size="mini">已关注</el-button>
+          <el-button v-show="peopleList[scope.$index].flag" :disabled="peopleList[scope.$index].flag" size="mini">已关注</el-button>
           <el-button v-show="!peopleList[scope.$index].flag" size="mini" @click="makeFriends(scope.$index)">关注</el-button>
         </template>
       </el-table-column>
@@ -48,7 +48,7 @@ export default {
     },
     makeFriends(index){
       let _this=this
-      this.$http.get("http://127.0.0.1:8888/api/friend/new",{
+      axios.get("http://127.0.0.1:8888/api/friend/new",{
         params:{
           userId:_this.$store.state.info.userId,
           friendId:_this.peopleList[index].userId
