@@ -48,11 +48,12 @@ export default {
         return;
       }
       let _this=this
-      axios.post('http://127.0.0.1:8888/api/user/login',{
+      this.$http.post('http://127.0.0.1:8888/api/user/login',{
           id:userId,
           password:password
       }).then(res=>{
           if(res.data.data.result===true){
+            window.localStorage["token"] = JSON.stringify(res.data.data.token);
             _this.$store.dispatch("setUserInfo",_this.form)
             _this.$router.push({
               path:'/shareChat'
