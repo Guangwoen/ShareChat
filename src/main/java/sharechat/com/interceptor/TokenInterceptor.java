@@ -1,19 +1,70 @@
 package sharechat.com.interceptor;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTDecodeException;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import org.springframework.lang.NonNull;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
+import sharechat.com.annotation.LoginToken;
+import sharechat.com.annotation.PassToken;
+import sharechat.com.entity.UserInfo;
+import sharechat.com.repository.UserRepository;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.Method;
 
 public class TokenInterceptor implements HandlerInterceptor {
+
+    UserRepository userRepository;
     @Override
     public boolean preHandle(HttpServletRequest request,
                              @NonNull HttpServletResponse response,
                              @NonNull Object handler) throws Exception {
         // 在此判断是否登陆
         String token = request.getHeader("token");
+        if(!(handler instanceof HandlerMethod)){
+            return true;
+        }
+        HandlerMethod handlerMethod=(HandlerMethod)handler;
+        Method method=handlerMethod.getMethod();
+        if(method.isAnnotationPresent(PassToken.class)){
+            PassToken passToken=method.getAnnotation(PassToken.class);
+            if(passToken.required()){
+                return true;
+            }
+        }
+        if(method.isAnnotationPresent(LoginToken.class)){
+            LoginToken loginToken=method.getAnnotation(LoginToken.class);
+            if(loginToken.required()){
+                if(token==null){
+                    throw new RuntimeException("无token，请重新登录");
+                }
+                String userid;
+                try{
+                    userid=JWT.decode(token).getAudience().get(0);
+                }catch (JWTDecodeException jwtDecodeException){
+                    throw new RuntimeException("401");
+                }
+                UserInfo userInfo;
+                if(userRepository.findById(userid).isPresent()) {
+                    userInfo = userRepository.findById(userid).get();
+                }else{
+                    throw new RuntimeException("账号不存在，请重新登录");
+                }
+                JWTVerifier jwtVerifier=JWT.require(Algorithm.HMAC256(userInfo.getPassword())).build();
+                try{
+                    jwtVerifier.verify(token);
+                }catch (JWTVerificationException jwtVerificationException){
+                    throw new RuntimeException("401");
+                }
+                return true;
+            }
+        }
         // 验证token的正确性
         /*if(!StringUtils.hasLength(token)){
             throw new BizException(9001, "token不能为空");

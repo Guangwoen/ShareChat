@@ -11,6 +11,11 @@ spring:
       local-datacenter: datacenter1
       username: sharechat
       password: sharechat542
+  datasource:
+    username: root
+    password: lsw15136897089
+    url: jdbc:mysql://localhost:3306/userinfo?useUnicode=true&useSSL=true
+    driver-class-name: com.mysql.cj.jdbc.Driver
   kafka:
     producer:
       bootstrap-servers: 127.0.0.1:9092
@@ -19,6 +24,10 @@ spring:
       enabled: true
   jpa:
     show-sql: true
+    database: MySQL
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    hibernate:
+      ddl-auto: update
   neo4j:
     uri: neo4j://localhost:7687
     authentication:
