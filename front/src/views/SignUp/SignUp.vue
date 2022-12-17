@@ -67,7 +67,7 @@
 
 <script>
 import { provinceAndCityData, regionData, provinceAndCityDataPlus, regionDataPlus, CodeToText, TextToCode } from 'element-china-area-data'
-
+import axios from "axios";
 export default {
   name: "SignUp",
   data: function() {
@@ -170,6 +170,7 @@ export default {
       return isJPG && isLt2M;
     },
     submitForm(formName) {
+      let _this=this
       for (let i = 0; i < this.selectedOptions.length; i++) {
         if (i === 0) { this.ruleForm.address+=CodeToText[this.selectedOptions[i]] }
         if (i === 1) { this.ruleForm.address+=CodeToText[this.selectedOptions[i]] }
@@ -178,15 +179,39 @@ export default {
       this.$refs[formName].validate((valid) => {//验证表单
         if (valid) {
           //提交表单
-          console.log('提交成功')
-          this.$router.push({
-            path:'/login'
+          let userInfo={
+            id:_this.ruleForm.userId,
+            name:_this.ruleForm.userName,
+            password:_this.ruleForm.password,
+            workplace:_this.ruleForm.organization,
+            region:_this.ruleForm.address,
+            age:_this.ruleForm.age,
+            gender:_this.ruleForm.gender,
+            signature:_this.ruleForm.description
+          }
+          console.log(userInfo)
+          axios.post("http://127.0.0.1:8888/api/user/register",userInfo).then(function (res){
+            if(res.data.data===null){
+              alert("该邮箱已被注册")
+            }
+            if (res.data.data.result===true){
+              console.log('提交成功')
+              _this.$router.push({
+                path:'/login'
+              })
+            }
+            if(res.data.data.result===false){
+              alert("注册失败")
+            }
           })
+
         } else {
           console.log('error submit!!');
           return false;
         }
       });
+
+
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();

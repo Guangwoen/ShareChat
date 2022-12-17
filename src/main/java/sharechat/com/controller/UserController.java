@@ -41,6 +41,7 @@ public class UserController {
     public Result<Map<String, Object>> login(@RequestBody Map info,
                         HttpServletRequest request,
                         HttpServletResponse response){
+        // System.out.println(info);
         String userid = (String) info.get("id");
         String password = (String) info.get("password");
         Map<String,Object> returnInfo=new HashMap<>();
@@ -78,9 +79,9 @@ public class UserController {
 
     @PostMapping("/register")
     public Result<Map<String,Object>> register(@RequestBody UserInfo userInfo){
+        System.out.println(userInfo);
         String userId=userInfo.getId();
         String name=userInfo.getName();
-        System.out.println("userId:"+userId+"  name:"+name);
         if(!userRepository.findById(userId).isPresent()) {
             userRepository.saveAndFlush(userInfo); // MySQL保存信息
             friendService.saveNewUser(new LinkNode(userInfo.getId(), userInfo.getName()),

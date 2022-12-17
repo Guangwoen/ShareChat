@@ -47,22 +47,14 @@ export default {
         this.form.judge=true
         return;
       }
-      this.$store.dispatch("setUserInfo",this.form)
-      this.$router.push({
-        path:'/shareChat'
-      })
-      /*axios.post('#',{
-        params:{
-          username:this.username,
-          password:this.password
-        }
-      }).then(data=>{
-          if(data.data.flag===true){
-            this.$store.dispatch("setUserInfo", {
-              username: this.username,
-              password: this.password
-            })
-            this.$router.push({
+      let _this=this
+      axios.post('http://127.0.0.1:8888/api/user/login',{
+          id:userId,
+          password:password
+      }).then(res=>{
+          if(res.data.data.result===true){
+            _this.$store.dispatch("setUserInfo",_this.form)
+            _this.$router.push({
               path:'/shareChat'
             })
             console.log("登录成功")
@@ -72,7 +64,7 @@ export default {
           }
       }).catch(function (error){
         console.log(error)
-      })*/
+      })
     },
     register: function (){
       this.$router.push({
