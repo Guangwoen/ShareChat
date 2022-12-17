@@ -11,7 +11,8 @@
       </el-table-column>
       <el-table-column>
         <template scope="scope">
-          <el-button size="mini" @click="makeFriends(scope.$index)">关注</el-button>
+          <el-button v-show="peopleList[scope.$index].flag" disabled size="mini">已关注</el-button>
+          <el-button v-show="!peopleList[scope.$index].flag" size="mini" @click="makeFriends(scope.$index)">关注</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -28,6 +29,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "MayLike",
   data(){
@@ -44,7 +47,14 @@ export default {
       this.index=index
     },
     makeFriends(index){
-
+      let _this=this
+      this.$http.get("http://127.0.0.1:8888/api/friend/new",{
+        params:{
+          userId:_this.$store.state.info.userId,
+          friendId:_this.peopleList[index].userId
+        }
+      })
+      this.peopleList[index].flag=true
     }
   },
   created() {
@@ -56,6 +66,9 @@ export default {
         }
       }).then(res=>{
           _this.peopleList=res.data.data
+          _this.peopleList.forEach(function (person){
+            person.flag=false
+          })
       }).catch(function (error){
         console.log(error)
       })
