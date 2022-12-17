@@ -1,10 +1,8 @@
 package sharechat.com.service;
 
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import sharechat.com.entity.GroupNode;
 import sharechat.com.entity.LinkNode;
-import sharechat.com.entity.Message;
 import sharechat.com.repository.GroupNodeRepository;
 import sharechat.com.repository.LinkNodeRepository;
 
@@ -36,6 +34,10 @@ public class FriendService {
         }
         groupNodeRepository.linkWithLinkNode(groupNode.getName(),
                 linkNode.getUserId());
+    }
+
+    public List<LinkNode> getRecommand(String userId) {
+        return linkNodeRepository.getRecommandById(userId);
     }
 
     /**

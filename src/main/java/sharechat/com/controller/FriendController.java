@@ -1,8 +1,6 @@
 package sharechat.com.controller;
 
-import cn.hutool.core.annotation.Link;
 import org.springframework.web.bind.annotation.*;
-import sharechat.com.annotation.LoginToken;
 import sharechat.com.entity.LinkNode;
 import sharechat.com.service.FriendService;
 import sharechat.com.util.result.Result;
@@ -22,8 +20,7 @@ public class FriendController {
 
     /* TODO 1. 发送好友申请
     *       2. 删除好友
-    *       3. 接受好友申请
-    *       4. 获取推荐用户*/
+    *       3. 接受好友申请*/
 
     @GetMapping("/match")
     public Result<List<Map<String, ?>>> searchUser(@RequestParam("userId") String id,
@@ -49,9 +46,13 @@ public class FriendController {
         return Result.success("success");
     }
 
-    @LoginToken
     @PostMapping("/friends")
     public Result<List<LinkNode>> getMyFriends(@RequestBody Map name) {
         return Result.success(friendService.getAllFriend((String)name.get("name")));
+    }
+
+    @GetMapping("/recommand")
+    public Result<List<LinkNode>> getRecommand(@RequestParam("userId") String id) {
+        return Result.success(friendService.getRecommand(id));
     }
 }

@@ -28,6 +28,11 @@ public interface LinkNodeRepository extends Neo4jRepository<LinkNode, Long> {
             "return count(p)")
     Long isLinked(String userId, String friendId);
 
+    @Query("match (n1:LinkNode), (n2:LinkNode), p=(n1)-[:BELONG]-()-[:BELONG]-(n2) " +
+            "where n1.userId = $userId " +
+            "return n2")
+    List<LinkNode> getRecommandById(String userId);
+
     List<LinkNode> getLinkNodesByUserId(String userId);
 
     List<LinkNode> getLinkNodesByName(String name);
