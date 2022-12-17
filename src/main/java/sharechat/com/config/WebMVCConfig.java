@@ -8,18 +8,25 @@ import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import sharechat.com.interceptor.TokenInterceptor;
+import sharechat.com.repository.UserRepository;
 
 @Configuration
 public class WebMVCConfig implements WebMvcConfigurer {
+
+    private final UserRepository userRepository;
+
+    public WebMVCConfig(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     /**
      * 拦截器注册
      * */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new TokenInterceptor())
+        registry.addInterceptor(new TokenInterceptor(userRepository))
                 .addPathPatterns("/**") // 为所有请求进行拦截
-                .excludePathPatterns("/login"); // 其中排除login请求的拦截
+                .excludePathPatterns("/api/user/**"); // 其中排除login请求的拦截
     }
 
     /**

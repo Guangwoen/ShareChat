@@ -24,6 +24,8 @@ public class LinkNode {
     @Property(name = "name")
     private String name;
 
-    @Relationship(type = "DIRECTED", direction = Relationship.Direction.INCOMING)
-    private Set<LinkNode> sets = new HashSet<>();
+    public LinkNode(String userId, String name) {
+        this.userId = userId;
+        this.name = name;
+    }
 }

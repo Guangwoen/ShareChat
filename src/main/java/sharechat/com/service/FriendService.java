@@ -2,8 +2,10 @@ package sharechat.com.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import sharechat.com.entity.GroupNode;
 import sharechat.com.entity.LinkNode;
 import sharechat.com.entity.Message;
+import sharechat.com.repository.GroupNodeRepository;
 import sharechat.com.repository.LinkNodeRepository;
 
 import java.util.*;
@@ -11,13 +13,36 @@ import java.util.*;
 @Service
 public class FriendService {
     private final LinkNodeRepository linkNodeRepository;
+    private final GroupNodeRepository groupNodeRepository;
 
-    public FriendService(LinkNodeRepository linkNodeRepository) {
+    public FriendService(LinkNodeRepository linkNodeRepository,
+                         GroupNodeRepository groupNodeRepository) {
         this.linkNodeRepository = linkNodeRepository;
+        this.groupNodeRepository = groupNodeRepository;
     }
 
+    /**
+     * 插入用户节点
+     * */
     public LinkNode save(LinkNode linkNode) {
         return linkNodeRepository.save(linkNode);
+    }
+
+    public void saveNewUser(LinkNode linkNode, GroupNode groupNode) {
+        // 用户Id的重复性已经检查
+        save(linkNode);
+        if(!groupNodeRepository.existsGroupNodeByName(groupNode.getName())) {
+            saveGroup(groupNode);
+        }
+        groupNodeRepository.linkWithLinkNode(groupNode.getName(),
+                linkNode.getUserId());
+    }
+
+    /**
+     * 插入所属团体节点
+     */
+    public GroupNode saveGroup(GroupNode groupNode) {
+        return groupNodeRepository.save(groupNode);
     }
 
     public String makeLink(String a, String b) {
@@ -48,7 +73,7 @@ public class FriendService {
         nodeSet.addAll(nameList);
         nodeSet.addAll(idList);
         List<Map<String, ?>> returnLst = new ArrayList<>();
-        for(LinkNode l: nodeSet) {
+        for (LinkNode l : nodeSet) {
             Map<String, Object> mapping = new HashMap<>();
             mapping.put("userId", l.getUserId());
             mapping.put("username", l.getName());
@@ -57,5 +82,4 @@ public class FriendService {
         }
         return returnLst;
     }
-
 }

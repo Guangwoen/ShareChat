@@ -2,6 +2,7 @@ package sharechat.com.controller;
 
 import cn.hutool.core.annotation.Link;
 import org.springframework.web.bind.annotation.*;
+import sharechat.com.annotation.LoginToken;
 import sharechat.com.entity.LinkNode;
 import sharechat.com.service.FriendService;
 import sharechat.com.util.result.Result;
@@ -48,6 +49,7 @@ public class FriendController {
         return Result.success("success");
     }
 
+    @LoginToken
     @PostMapping("/friends")
     public Result<List<LinkNode>> getMyFriends(@RequestBody Map name) {
         return Result.success(friendService.getAllFriend((String)name.get("name")));

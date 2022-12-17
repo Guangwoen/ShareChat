@@ -1,8 +1,6 @@
 package sharechat.com.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
 import javax.persistence.Entity;
@@ -16,7 +14,7 @@ public class UserInfo {
 
     @Id
     @TableField("Id")
-    private String Id;
+    private String id;
 
     @TableField("name")
     private String name;
@@ -40,7 +38,7 @@ public class UserInfo {
     private String signature;
 
     public UserInfo(String id,String password,String workplace,String region,int age,String gender,String signature){
-        this.Id=id;
+        this.id=id;
         this.password=password;
         this.workplace=workplace;
         this.region=region;
@@ -49,7 +47,7 @@ public class UserInfo {
         this.signature=signature;
     }
     public String getId(){
-        return Id;
+        return id;
     }
     public String getPassword(){
         return password;
