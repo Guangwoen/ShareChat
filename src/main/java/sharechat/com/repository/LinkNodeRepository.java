@@ -2,7 +2,6 @@ package sharechat.com.repository;
 
 import org.springframework.data.neo4j.repository.query.Query;
 import org.springframework.stereotype.Repository;
-import sharechat.com.entity.GroupNode;
 import sharechat.com.entity.LinkNode;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 
@@ -14,6 +13,10 @@ public interface LinkNodeRepository extends Neo4jRepository<LinkNode, Long> {
             "where n1.userId = $a and n2.userId = $b " +
             "merge (n1)-[:FRIEND]->(n2)")
     void makeLink(String a, String b);
+
+    @Query("match (n1: LinkNode {userId: $a})-[r:FRIEND]-(n2: LinkNode {userId: $b}) " +
+            "delete r")
+    void deleteLink(String a, String b);
 
     @Query("match (a)-[:FRIEND]-(b) where a.name = $name " +
             "return b ")
