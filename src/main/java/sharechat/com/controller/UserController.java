@@ -1,6 +1,7 @@
 package sharechat.com.controller;
 
 
+import com.baomidou.mybatisplus.extension.api.R;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import sharechat.com.entity.GroupNode;
@@ -18,7 +19,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -57,6 +60,7 @@ public class UserController {
                 Cookie cookie = new Cookie("token", token);
                 cookie.setPath("/");
                 response.addCookie(cookie);
+                userRepository.goOnline(userid);
                 result = true;
             } else {
                 result = false;
@@ -69,7 +73,8 @@ public class UserController {
     }
 
     @PostMapping("/logout")
-    public boolean logout(HttpServletRequest request){
+    public boolean logout(@RequestBody String id, HttpServletRequest request){
+        userRepository.noOnline(id);
         HttpSession session=request.getSession();
         session.removeAttribute("user");
         return true;
@@ -96,5 +101,60 @@ public class UserController {
         }else{
             return Result.error("该邮箱已经注册过");
         }
+    }
+
+    @PostMapping("/updateUserInfo")
+    public Result<Map<String,Object>> updateUserInfo(@RequestBody Map info){
+        String id=(String) info.get("userId");
+        String name=(String) info.get("username");
+        String workplace=(String) info.get("organization");
+        String region=(String) info.get("address");
+        int age=(int) info.get("age");
+        String gender=(String) info.get("gender");
+        String signature=(String) info.get("description");
+        Map<String,Object>returnInfo=new HashMap<>();
+        int updateRows=userRepository.updateInfo(id,name,workplace,region,age,gender,signature);
+        if(updateRows==1){
+            returnInfo.put("result",true);
+        }else{
+            returnInfo.put("result",false);
+        }
+        return Result.success(returnInfo);
+    }
+
+    @PostMapping("/updateUserPassword")
+    public Result<Map<String,Object>> updateUserPassword(@RequestBody Map info){
+        String id=(String) info.get("userId");
+        String password=(String) info.get("password");
+        Map<String,Object>returnInfo=new HashMap<>();
+        int updateRows=userRepository.updatePassword(id,password);
+        if(updateRows==1){
+            returnInfo.put("result",true);
+        }else{
+            returnInfo.put("result",false);
+        }
+        return Result.success(returnInfo);
+    }
+
+    @GetMapping("/getAllOnlineUsers")
+    public Result<Map<String,Object>> getAllOnlineUsers(@RequestParam("userId") String id){
+        List<LinkNode> friends = friendService.getAllFriend(id);
+        int num=friends.size();
+        ArrayList<Map> onlineFriends=new ArrayList<>();
+        Map<String,Object> returnInfo=new HashMap<>();
+        for(int i=0;i<num;i++){
+            String friendId=friends.get(i).getUserId();
+            if(userRepository.findById(friendId).isPresent()){
+                UserInfo userInfo=userRepository.findById(friendId).get();
+                if(userInfo.getOnline()){
+                    Map<String,Object>friend=new HashMap<>();
+                    friend.put("id",userInfo.getId());
+                    friend.put("name",userInfo.getName());
+                    onlineFriends.add(friend);
+                }
+            }
+        }
+        returnInfo.put("onlineFriends",onlineFriends);
+        return Result.success(returnInfo);
     }
 }
