@@ -123,26 +123,26 @@ export default {
           { min: 1, max: 12, message: '长度在 1 到 12 个字符', trigger: 'blur' }
         ],
         password: [
-          { trigger: 'blur' ,validator: validatePass},
+          { required: true, trigger: 'blur' ,validator: validatePass},
         ],
         checkPassword: [
-          { trigger: 'blur' ,validator: validateCheckPass},
+          { required: true, trigger: 'blur' ,validator: validateCheckPass},
         ],
         organization:[
-          { required: true, message: '请输入您的工作单位', trigger: 'change' }
+          { message: '请输入您的工作单位', trigger: 'change' }
         ],
         age:[
           { required: true, message: '请输入您的年龄', trigger: 'change' },
           { type: 'number', message: '年龄必须为数字值'}
         ],
         region: [
-          { required: true, message: '请选择活动区域', trigger: 'change' }
+          { message: '请选择活动区域', trigger: 'change' }
         ],
         gender: [
           { required: true, message: '请填写您的性别', trigger: 'change' }
         ],
         description: [
-          { required: false, message: '请填写个性签名', trigger: 'blur' }
+          { message: '请填写个性签名', trigger: 'blur' }
         ]
       }
     }
