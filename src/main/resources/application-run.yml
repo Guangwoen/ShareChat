@@ -46,3 +46,4 @@ aliyun:
       keyid: LTAI5tE1yMXCZAUG1HnHzva6
       keysecret: gLMxkMFHqYKMgplgUvTjBEoPWMQkED
       bucketname: sharechat
+      filehost: media

@@ -47,9 +47,12 @@
 
       <el-form-item label="个人头像">
         <el-upload class="avatar-uploader"
-                   action="#"
+                   action="http://127.0.0.1:8888/api/user/media/avatar"
                    :show-file-list="false"
+                   :limit="1"
                    :on-success="handleAvatarSuccess"
+                   :on-progress="progress"
+                   :on-error="error"
                    :before-upload="beforeAvatarUpload">
           <img v-if="ruleForm.imageUrl" :src="ruleForm.imageUrl" class="avatar" alt="">
           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -153,20 +156,27 @@ export default {
     }
   },
   methods: {
+    progress(){
+      alert("progress")
+    },
+    error(){
+      alert("error")
+    },
     handleAvatarSuccess(res, file) {
-      this.ruleForm.imageUrl = URL.createObjectURL(file.raw);
-      alert("hello")
+      console.log(res.msg)
+      //this.ruleForm.imageUrl = URL.createObjectURL(file.raw);
+      this.ruleForm.imageUrl=res.msg
+      // alert(this.ruleForm.imageUrl+"=====")
     },
     beforeAvatarUpload(file) {
       const isJPG = file.type === "image/png" || "image/jpg" || "image/jpeg";
-      const isLt2M = file.size / 1024 / 1024 < 2;
+      const isLt2M = file.size / 1024 / 1024 < 100;
       if (!isJPG) {
         this.$message.error("上传头像图片只能是 JPG/PNG/JPEG 格式!");
       }
       if (!isLt2M) {
-        this.$message.error("上传头像图片大小不能超过 2MB!");
+        this.$message.error("上传头像图片大小不能超过 100MB!");
       }
-      alert(file.raw)
       return isJPG && isLt2M;
     },
     submitForm(formName) {

@@ -157,4 +157,30 @@ public class UserController {
         returnInfo.put("onlineFriends",onlineFriends);
         return Result.success(returnInfo);
     }
+
+    @PostMapping("/media/{type}")
+    public Result<String> uploadMedia(@RequestPart("file") MultipartFile file,
+                                      @PathVariable("type") String type) {
+        String uploadUrl = "";
+        System.out.println("文件上传");
+        try {
+            if(null != file) {
+                String fileName = file.getOriginalFilename();
+                if(!"".equals(fileName.trim())) {
+                    File newFile = new File(fileName);
+                    FileOutputStream os = new FileOutputStream(newFile);
+                    os.write(file.getBytes());
+                    os.close();
+                    file.transferTo(newFile);
+                    uploadUrl = AliyunOSSUtil.upload(newFile, type);
+                }
+            }
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        if(null != uploadUrl)
+            return Result.success(uploadUrl);
+        return Result.error("上传失败");
+    }
 }
