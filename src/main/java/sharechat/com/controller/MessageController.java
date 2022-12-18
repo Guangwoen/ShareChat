@@ -1,14 +1,16 @@
 package sharechat.com.controller;
 
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import sharechat.com.entity.Message;
 import sharechat.com.service.FriendService;
 import sharechat.com.service.MessageService;
+import sharechat.com.util.oss.AliyunOSSUtil;
 import sharechat.com.util.result.Result;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -48,6 +50,32 @@ public class MessageController {
                 id, sender, Instant.now().toString(), message.getMsgBody(), false);
         messageService.saveMsg(msg);
         return Result.success(msg);
+    }
+
+    @PostMapping("/media")
+    public Result<String> uploadMedia(@RequestPart("file") MultipartFile file,
+                                      @RequestParam("type") String type) {
+        String uploadUrl = "";
+        System.out.println("文件上传");
+        try {
+            if(null != file) {
+                String fileName = file.getOriginalFilename();
+                if(!"".equals(fileName.trim())) {
+                    File newFile = new File(fileName);
+                    FileOutputStream os = new FileOutputStream(newFile);
+                    os.write(file.getBytes());
+                    os.close();
+                    file.transferTo(newFile);
+                    uploadUrl = AliyunOSSUtil.upload(newFile, type);
+                }
+            }
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        if(null != uploadUrl)
+            return Result.success(uploadUrl);
+        return Result.error("上传失败");
     }
 
     /**

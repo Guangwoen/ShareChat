@@ -1,22 +1,23 @@
 package sharechat.com.controller;
 
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import sharechat.com.entity.GroupNode;
 import sharechat.com.entity.LinkNode;
 import sharechat.com.entity.UserInfo;
 import sharechat.com.repository.UserRepository;
 import sharechat.com.service.FriendService;
 import sharechat.com.service.TokenService;
+import sharechat.com.util.oss.AliyunOSSUtil;
 import sharechat.com.util.result.Result;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -96,6 +97,4 @@ public class UserController {
             return Result.error("该邮箱已经注册过");
         }
     }
-
-
 }

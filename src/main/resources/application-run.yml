@@ -1,4 +1,8 @@
 spring:
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 500MB
   redis:
     host: localhost
     port: 6379
@@ -35,3 +39,10 @@ spring:
       password: ecnu542_
 server:
   port: 8888
+aliyun:
+  oss:
+    file:
+      endpoint: oss-cn-shanghai.aliyuncs.com
+      keyid: LTAI5tE1yMXCZAUG1HnHzva6
+      keysecret: gLMxkMFHqYKMgplgUvTjBEoPWMQkED
+      bucketname: sharechat
