@@ -14,11 +14,11 @@
       </el-form-item>
 
       <el-form-item label="密码" prop="password">
-        <el-input v-model="ruleForm.password"></el-input>
+        <el-input type="password" v-model="ruleForm.password"></el-input>
       </el-form-item>
 
       <el-form-item label="确认密码" prop="checkPassword">
-        <el-input v-model="ruleForm.checkPassword"></el-input>
+        <el-input type="password" v-model="ruleForm.checkPassword"></el-input>
       </el-form-item>
 
       <el-form-item label="工作单位" prop="organization">
@@ -120,7 +120,7 @@ export default {
         ],
         userName: [
           { required: true, message: '请输入用户名', trigger: 'blur' },
-          { min: 6, max: 12, message: '长度在 6 到 12 个字符', trigger: 'blur' }
+          { min: 1, max: 12, message: '长度在 1 到 12 个字符', trigger: 'blur' }
         ],
         password: [
           { trigger: 'blur' ,validator: validatePass},
@@ -182,7 +182,7 @@ export default {
           let userInfo={
             id:_this.ruleForm.userId,
             name:_this.ruleForm.userName,
-            password:_this.ruleForm.password,
+            password:_this.$md5(_this.ruleForm.password),
             workplace:_this.ruleForm.organization,
             region:_this.ruleForm.address,
             age:_this.ruleForm.age,

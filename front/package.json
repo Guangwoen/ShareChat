@@ -13,6 +13,7 @@
     "element-china-area-data": "^5.0.2",
     "element-ui": "^2.15.12",
     "html2canvas": "^1.4.1",
+    "js-md5": "^0.7.3",
     "moment": "^2.29.4",
     "vue": "^2.6.14",
     "vue-router": "^3.5.2",

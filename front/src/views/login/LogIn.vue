@@ -50,7 +50,7 @@ export default {
       let _this=this
       this.$http.post('http://127.0.0.1:8888/api/user/login',{
           id:userId,
-          password:password
+          password:_this.$md5(password)
       }).then(res=>{
           if(res.data.data.result===true){
             window.localStorage["token"] = res.data.data.token;

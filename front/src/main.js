@@ -15,6 +15,9 @@ Vue.use(elementUI);
 import http from './http';  //此处问http文件的路径
 Vue.prototype.$http = http;
 
+import md5 from 'js-md5';
+Vue.prototype.$md5 = md5;
+
 //应用插件
 Vue.use(VueRouter)
 new Vue({

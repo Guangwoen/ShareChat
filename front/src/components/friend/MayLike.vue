@@ -11,8 +11,7 @@
       </el-table-column>
       <el-table-column>
         <template scope="scope">
-          <el-button v-show="peopleList[scope.$index].flag" :disabled="peopleList[scope.$index].flag" size="mini">已关注</el-button>
-          <el-button v-show="!peopleList[scope.$index].flag" size="mini" @click="makeFriends(scope.$index)">关注</el-button>
+          <el-button :disabled="scope.row.flag===true" size="mini" @click="makeFriends(scope.$index)">{{scope.row.text}}</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -55,6 +54,7 @@ export default {
         }
       })
       this.peopleList[index].flag=true
+      this.peopleList[index].text="已关注"
     }
   },
   created() {
@@ -67,7 +67,8 @@ export default {
       }).then(res=>{
           _this.peopleList=res.data.data
           _this.peopleList.forEach(function (person){
-            person.flag=false
+            _this.$set(person,'flag',false)
+            _this.$set(person,'text',"关注")
           })
       }).catch(function (error){
         console.log(error)
