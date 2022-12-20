@@ -57,6 +57,10 @@ public class FriendService {
         return a+"_"+b;
     }
 
+    public void deleteLink(String a, String b) {
+        linkNodeRepository.deleteLink(a, b);
+    }
+
     public boolean isLinked(String userId, String friendId) {
         Long linkCount = linkNodeRepository.isLinked(userId, friendId);
         System.out.println(userId+"_"+friendId);

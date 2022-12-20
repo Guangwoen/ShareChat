@@ -22,8 +22,8 @@
         <span slot="title">感兴趣的人</span>
       </el-menu-item>
       <el-menu-item index="4">
-        <i class="el-icon-setting"></i>
-        <span slot="title">设置</span>
+        <i class="el-icon-switch-button" @click="logOut"></i>
+        <span slot="title">登出</span>
       </el-menu-item>
       <el-menu-item index="5">
         <i v-show="!isCollapse" class="el-icon-s-fold" @click="isCollapse=true"></i>
@@ -84,6 +84,17 @@ export default {
     },3000)
   },*/
   methods: {
+    logOut(){
+      let _this=this
+      this.$http.post('http://127.0.0.1:8888/api/user/logout',_this.$store.state.info.userId).then(res=>{
+        _this.$router.push({
+          path:'/'
+        })
+        console.log("登出成功")
+      }).catch(function (error){
+        console.log(error)
+      })
+    },
     stop() {
       clearInterval(this.timer);
       this.timer = null;

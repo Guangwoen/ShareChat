@@ -42,13 +42,22 @@ public class FriendController {
     @GetMapping("/new")
     public Result<String> makeLink(@RequestParam("userId") String userid,
                                    @RequestParam("friendId") String friendId) {
+        if(userid.equals(friendId)) return Result.error("Id不能相同");
         friendService.makeLink(userid, friendId);
         return Result.success("success");
     }
 
+    @DeleteMapping("/del")
+    public Result<String> deleteLink(@RequestParam("from") String userid,
+                                     @RequestParam("to") String friendid) {
+        if(userid.equals(friendid)) return Result.error("Id不能相同");
+        friendService.deleteLink(userid, friendid);
+        return Result.success("删除成功");
+    }
+
     @PostMapping("/friends")
     public Result<List<LinkNode>> getMyFriends(@RequestBody Map name) {
-        return Result.success(friendService.getAllFriend((String)name.get("name")));
+        return Result.success(friendService.getAllFriend((String) name.get("name")));
     }
 
     @GetMapping("/recommand")

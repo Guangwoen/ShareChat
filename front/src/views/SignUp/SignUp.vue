@@ -157,7 +157,7 @@ export default {
   },
   methods: {
     progress(){
-      alert("progress")
+      //alert("progress")
     },
     error(){
       alert("error")

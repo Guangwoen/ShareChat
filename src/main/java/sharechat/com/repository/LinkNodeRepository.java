@@ -18,9 +18,9 @@ public interface LinkNodeRepository extends Neo4jRepository<LinkNode, Long> {
             "delete r")
     void deleteLink(String a, String b);
 
-    @Query("match (a)-[:FRIEND]-(b) where a.name = $name " +
+    @Query("match (a)-[:FRIEND]-(b) where a.userId = $id " +
             "return b ")
-    List<LinkNode> getFriendsByName(String name);
+    List<LinkNode> getFriendsByName(String id);
 
     @Query("match (a)-[:FRIEND]-(b) where a.userId = $id " +
             "return b")
