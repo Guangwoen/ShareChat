@@ -16,14 +16,15 @@ public interface UserRepository extends JpaRepository<UserInfo, String> {
 
     @Transactional
     @Modifying
-    @Query(value = "update userinfo set name = :name, workplace = :workplace, region = :region, age = :age, gender = :gender, signature = :signature where Id = :Id",nativeQuery = true)
+    @Query(value = "update userinfo set name = :name, workplace = :workplace, region = :region, age = :age, gender = :gender, signature = :signature, headPicture = :headPicture where Id = :Id",nativeQuery = true)
     int updateInfo(@Param("Id") String Id,
                    @Param("name") String name,
                    @Param("workplace") String workplace,
                    @Param("region") String region,
                    @Param("age") int age,
                    @Param("gender") String gender,
-                   @Param("signature") String signature);
+                   @Param("signature") String signature,
+                   @Param("headPicture") String headPicture);
 
     @Transactional
     @Modifying

@@ -112,8 +112,9 @@ public class UserController {
         int age=(int) info.get("age");
         String gender=(String) info.get("gender");
         String signature=(String) info.get("description");
+        String headPicture=(String) info.get("headPicture");
         Map<String,Object>returnInfo=new HashMap<>();
-        int updateRows=userRepository.updateInfo(id,name,workplace,region,age,gender,signature);
+        int updateRows=userRepository.updateInfo(id,name,workplace,region,age,gender,signature,headPicture);
         if(updateRows==1){
             returnInfo.put("result",true);
         }else{

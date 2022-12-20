@@ -37,10 +37,13 @@ public class UserInfo {
     @TableField("signature")
     private String signature;
 
+    @TableField("headPicture")
+    private String headPicture;
+
     @TableField("online")
     private boolean online;
 
-    public UserInfo(String id,String name,String password,String workplace,String region,int age,String gender,String signature){
+    public UserInfo(String id,String name,String password,String workplace,String region,int age,String gender,String signature,String headPicture){
         this.id=id;
         this.name=name;
         this.password=password;
@@ -49,6 +52,7 @@ public class UserInfo {
         this.age=age;
         this.gender=gender;
         this.signature=signature;
+        this.headPicture=headPicture;
         this.online=false;
     }
     public String getId(){
@@ -77,5 +81,8 @@ public class UserInfo {
     }
     public boolean getOnline(){
         return online;
+    }
+    public String getHeadPicture(){
+        return headPicture;
     }
 }
