@@ -163,7 +163,7 @@ export default {
       alert("error")
     },
     handleAvatarSuccess(res, file) {
-      console.log(res.msg)
+      alert(res.msg)
       //this.ruleForm.imageUrl = URL.createObjectURL(file.raw);
       this.ruleForm.imageUrl=res.msg
       // alert(this.ruleForm.imageUrl+"=====")
@@ -197,7 +197,8 @@ export default {
             region:_this.ruleForm.address,
             age:_this.ruleForm.age,
             gender:_this.ruleForm.gender,
-            signature:_this.ruleForm.description
+            signature:_this.ruleForm.description,
+            headPicture: _this.ruleForm.imageUrl,
           }
           console.log(userInfo)
           axios.post("http://127.0.0.1:8888/api/user/register",userInfo).then(function (res){
