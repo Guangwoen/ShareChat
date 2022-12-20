@@ -13,6 +13,9 @@ export default new Vuex.Store({
       username:"tyrion",
       password:""
     },
+    userInfo:{
+
+    },
     curFriend:{},
     friends:[]
   },

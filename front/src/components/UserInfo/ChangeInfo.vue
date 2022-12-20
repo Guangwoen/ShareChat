@@ -4,7 +4,7 @@
     <!--用户名 学校/公司, 年龄, 性别，头像, 地址（省/市）,个性签名（个人描述-->
 
     <el-form-item label="昵称" prop="userName">
-      <el-input v-model="ruleForm.userName" :placeholder="UserInfo.username"/>
+      <el-input v-model="ruleForm.userName" :placeholder="UserInfo.username" value="UserInfo.username"/>
     </el-form-item>
 
     <el-form-item label="工作单位" prop="organization">
@@ -33,7 +33,7 @@
 
     <el-form-item label="个人头像" prop="avatar">
       <el-upload class="avatar-uploader"
-                 action="#"
+                 action="http://127.0.0.1:8888/api/user/media/avatar"
                  :show-file-list="false"
                  :on-success="handleAvatarSuccess"
                  :before-upload="beforeAvatarUpload">
@@ -53,6 +53,7 @@
 import { provinceAndCityData, regionData, provinceAndCityDataPlus, regionDataPlus, CodeToText, TextToCode } from 'element-china-area-data'
 import UserInfo from "@/components/UserInfo/UserInfo";
 import axios from "axios";
+import TopBar from "@/components/TopBar/TopBar.vue";
 
 export default {
   name: "ChangeInfo",
@@ -69,7 +70,8 @@ export default {
         gender: '',
         description: '',
         address:'',
-        avatar: ''
+        avatar: '',
+        imageUrl:''
       },
       rules: {
         userName: [
@@ -100,11 +102,11 @@ export default {
   },
   methods:{
     handleAvatarSuccess(res, file) {
-      this.ruleForm.imageUrl = URL.createObjectURL(file.raw);
+      this.ruleForm.imageUrl=res.msg
     },
     beforeAvatarUpload(file) {
       const isJPG = file.type === "image/png" || "image/jpg" || "image/jpeg";
-      const isLt2M = file.size / 1024 / 1024 < 2;
+      const isLt2M = file.size / 1024 / 1024 < 100;
       if (!isJPG) {
         this.$message.error("上传头像图片只能是 JPG/PNG/JPEG 格式!");
       }
@@ -127,30 +129,29 @@ export default {
         }
       }
       this.$refs[formName].validate((valid) => {//验证表单
-        alert(_this.$store.state.info.userId)
         if (valid) {
           //提交表单
           let userInfo={
             id:_this.$store.state.info.userId,
-            name:_this.ruleForm.userName,
-            workplace:_this.ruleForm.organization,
-            region:_this.ruleForm.address,
-            age:_this.ruleForm.age,
-            gender:_this.ruleForm.gender,
-            signature:_this.ruleForm.description,
-            headPicture:_this.ruleForm.avatar
+            name:_this.ruleForm.userName===""?_this.ruleForm.userName: _this.$store.state.userInfo.username,
+            workplace:_this.ruleForm.organization===""?_this.ruleForm.organization: _this.$store.state.userInfo.organization,
+            region:_this.ruleForm.address===""?_this.ruleForm.address: _this.$store.state.userInfo.address,
+            age:_this.ruleForm.age===""?_this.ruleForm.age: _this.$store.state.userInfo.age,
+            gender:_this.ruleForm.gender===""?_this.ruleForm.gender: _this.$store.state.userInfo.gender,
+            signature:_this.ruleForm.description===""?_this.ruleForm.description: _this.$store.state.userInfo.description,
+            headPicture:_this.ruleForm.imageUrl===""?_this.ruleForm.imageUrl: _this.$store.state.userInfo.imageUrl
           }
           console.log(userInfo)
-          axios.post("http://127.0.0.1:8888/api/user/updateUserInfo",userInfo).then(function (res){
+          this.$http.put("http://127.0.0.1:8888/api/user/updateUserInfo",userInfo).then((res) => {
+            console.log(res)
             if (res.data.data.result===true){
               console.log('提交成功')
-              this.$emit("childVisible")
             }
             if(res.data.data.result===false){
-              alert("注册失败")
+              alert("提交失败")
             }
+            this.$emit("childVisible")
           })
-
         } else {
           console.log('error submit!!');
           return false;

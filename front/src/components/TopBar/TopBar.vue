@@ -127,16 +127,32 @@ export default {
     parentVisible(){
       this.formVisible=false
     },
+    childVisible() {
+      this.formVisible = false
+    },
     changeInfo(){
       this.dialogVisible=false
       this.formVisible=true
-
     },
     //从后端获取用户信息
     showUserInfo(){
       this.dialogVisible = true
+      let _this=this
       //初始化用户信息
-      this.linkNode = {
+      this.$http.get("http://127.0.0.1:8888/api/user/showUserInfo",{
+       params:{
+         userId:_this.$store.state.info.userId
+       }
+      }).then(res=>{
+            if(res.data.data.result){
+              _this.linkNode=res.data.data
+              _this.$store.state.userInfo=_this.linkNode
+            }
+            else{
+              console.log("error")
+            }
+      })
+      /*this.linkNode = {
         userId: this.$store.state.info.userId,
         username: "御坂美琴",
         organization: "常盘台中学",
@@ -145,12 +161,7 @@ export default {
         avatar: "https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png",
         description: "乐",
         address: '上海市普陀区'
-      };
-      // axios.get('https://localhost:8081/'+this.linkNode.userId).then(function (res){
-      //   this.linkNode=res.data
-      // }).catch(function (error){
-      //   console.log(error)
-      // })
+      }*/
     }
   },
   computed:{

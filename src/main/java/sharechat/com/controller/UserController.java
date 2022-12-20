@@ -1,6 +1,7 @@
 package sharechat.com.controller;
 
 
+import cn.hutool.core.lang.hash.Hash;
 import com.baomidou.mybatisplus.extension.api.R;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -103,37 +104,34 @@ public class UserController {
         }
     }
 
-    @PostMapping("/updateUserInfo")
-    public Result<Map<String,Object>> updateUserInfo(@RequestBody Map info){
-        String id=(String) info.get("userId");
-        String name=(String) info.get("username");
-        String workplace=(String) info.get("organization");
-        String region=(String) info.get("address");
-        int age=(int) info.get("age");
-        String gender=(String) info.get("gender");
-        String signature=(String) info.get("description");
-        String headPicture=(String) info.get("headPicture");
-        Map<String,Object>returnInfo=new HashMap<>();
-        int updateRows=userRepository.updateInfo(id,name,workplace,region,age,gender,signature,headPicture);
-        if(updateRows==1){
-            returnInfo.put("result",true);
-        }else{
-            returnInfo.put("result",false);
+    @PutMapping("/updateUserInfo")
+    public Result<Map<String, Boolean>> updateUserInfo(@RequestBody UserInfo info){
+        System.out.println(info);
+        if(info.getId() == null || info.getId().length() == 0) return Result.error("请求错误");
+        String password = userRepository.findPasswordById(info.getId());
+        Map<String, Boolean> resultMap = new HashMap<>();
+        if(info.getName() == null || info.getName().length() == 0
+                || (info.getAge() < 0 || info.getAge() > 100)
+                || info.getGender() == null || info.getGender().length() != 1) {
+            resultMap.put("result", false);
         }
-        return Result.success(returnInfo);
+        else {
+            info.setPassword(password);
+            UserInfo k = userRepository.saveAndFlush(info);
+            resultMap.put("result", true);
+        }
+        return Result.success(resultMap);
     }
 
-    @PostMapping("/updateUserPassword")
-    public Result<Map<String,Object>> updateUserPassword(@RequestBody Map info){
-        String id=(String) info.get("userId");
-        String password=(String) info.get("password");
+    @PutMapping("/updateUserPassword")
+    public Result<Map<String,Object>> updateUserPassword(@RequestParam("userId") String id,
+                                                         @RequestParam("password") String password){
+        // 假设id和password都不是空
         Map<String,Object>returnInfo=new HashMap<>();
-        int updateRows=userRepository.updatePassword(id,password);
-        if(updateRows==1){
-            returnInfo.put("result",true);
-        }else{
-            returnInfo.put("result",false);
-        }
+        UserInfo modifiedUser = userRepository.getReferenceById(id);
+        modifiedUser.setPassword(password);
+        userRepository.saveAndFlush(modifiedUser);
+        returnInfo.put("result", true);
         return Result.success(returnInfo);
     }
 
@@ -161,6 +159,7 @@ public class UserController {
 
     @GetMapping("/showUserInfo")
     public Result<Map<String,Object>> showUserInfo(@RequestParam("userId") String id){
+        System.out.println(id+"========");
         Map<String,Object> returnInfo=new HashMap<>();
         if(userRepository.findById(id).isPresent()) {
             UserInfo userInfo = userRepository.findById(id).get();
