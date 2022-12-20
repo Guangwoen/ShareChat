@@ -52,6 +52,7 @@
 <script>
 import { provinceAndCityData, regionData, provinceAndCityDataPlus, regionDataPlus, CodeToText, TextToCode } from 'element-china-area-data'
 import UserInfo from "@/components/UserInfo/UserInfo";
+import axios from "axios";
 
 export default {
   name: "ChangeInfo",
@@ -114,6 +115,7 @@ export default {
       return isJPG && isLt2M;
     },
     submitForm(formName) {
+      let _this=this
       for (let i = 0; i < this.selectedOptions.length; i++) {
         if (i === 0) { this.ruleForm.address+=CodeToText[this.selectedOptions[i]] }
         if (i === 1) { this.ruleForm.address+=CodeToText[this.selectedOptions[i]] }
@@ -125,10 +127,30 @@ export default {
         }
       }
       this.$refs[formName].validate((valid) => {//验证表单
+        alert(_this.$store.state.info.userId)
         if (valid) {
           //提交表单
-          console.log('提交成功')
-          this.$emit("childVisible")
+          let userInfo={
+            id:_this.$store.state.info.userId,
+            name:_this.ruleForm.userName,
+            workplace:_this.ruleForm.organization,
+            region:_this.ruleForm.address,
+            age:_this.ruleForm.age,
+            gender:_this.ruleForm.gender,
+            signature:_this.ruleForm.description,
+            headPicture:_this.ruleForm.avatar
+          }
+          console.log(userInfo)
+          axios.post("http://127.0.0.1:8888/api/user/updateUserInfo",userInfo).then(function (res){
+            if (res.data.data.result===true){
+              console.log('提交成功')
+              this.$emit("childVisible")
+            }
+            if(res.data.data.result===false){
+              alert("注册失败")
+            }
+          })
+
         } else {
           console.log('error submit!!');
           return false;

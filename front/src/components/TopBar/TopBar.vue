@@ -130,6 +130,7 @@ export default {
     changeInfo(){
       this.dialogVisible=false
       this.formVisible=true
+
     },
     //从后端获取用户信息
     showUserInfo(){

@@ -214,7 +214,6 @@ export default {
               alert("注册失败")
             }
           })
-
         } else {
           console.log('error submit!!');
           return false;
