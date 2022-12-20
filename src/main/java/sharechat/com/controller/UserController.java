@@ -159,6 +159,26 @@ public class UserController {
         return Result.success(returnInfo);
     }
 
+    @GetMapping("/showUserInfo")
+    public Result<Map<String,Object>> showUserInfo(@RequestParam("userId") String id){
+        Map<String,Object> returnInfo=new HashMap<>();
+        if(userRepository.findById(id).isPresent()) {
+            UserInfo userInfo = userRepository.findById(id).get();
+            returnInfo.put("userId",userInfo.getId());
+            returnInfo.put("username",userInfo.getName());
+            returnInfo.put("organization",userInfo.getWorkplace());
+            returnInfo.put("age",userInfo.getAge());
+            returnInfo.put("gender",userInfo.getGender());
+            returnInfo.put("avatar",userInfo.getHeadPicture());
+            returnInfo.put("description",userInfo.getSignature());
+            returnInfo.put("address",userInfo.getRegion());
+            returnInfo.put("result",true);
+        }else{
+            returnInfo.put("result",false);
+        }
+        return Result.success(returnInfo);
+    }
+
     @PostMapping("/media/{type}")
     public Result<String> uploadMedia(@RequestPart("file") MultipartFile file,
                                       @PathVariable("type") String type) {
