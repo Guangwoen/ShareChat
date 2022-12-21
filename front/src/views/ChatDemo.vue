@@ -32,6 +32,7 @@
                   :before-upload="beforeFileUpload"
                   :success="handleFileSuccess"
                   :show-file-list="false"
+                  :auto-upload="false"
                   style="display: inline-block"
               >
                 <i class="el-icon-folder-opened" style="margin-left: 10px"></i>
@@ -41,8 +42,10 @@
                   class="upload-demo"
                   action="https://jsonplaceholder.typicode.com/posts/"
                   :before-upload="beforeImgUpload"
+                  :on-change="uploadImg"
                   :success="handleImgSuccess"
                   :show-file-list="false"
+                  :auto-upload="false"
                   style="display: inline-block"
               >
                 <i class="el-icon-picture-outline" style="margin-left: 10px"></i>
@@ -131,6 +134,33 @@ export default {
     })
   },
   methods: {
+    uploadImg(file){
+      let isImg=""
+      let ans=["image/png","image/jpg","image/jpeg"]
+      ans.forEach(ans=>{
+        if (file.raw.type===ans){
+          isImg=true
+        }
+      })
+      const isLt2M = file.raw.size / 1024 / 1024 < 100;
+      if (!isImg) {
+        this.$message.error("上传图片只能是 JPG/PNG/JPEG 格式");
+        return false
+      }
+      if (!isLt2M) {
+        this.$message.error("上传文件大小不能超过 100MB!");
+        return false
+      }
+      //渲染图片到前端
+      this.createImg(null,this.user,URL.createObjectURL(file.raw))
+      //将图片发送至websocket
+      let reader=new FileReader()
+      //此处file格式？？？
+      reader.readAsBinaryString(file.raw)
+      reader.onload=function loaded(evt){
+        socket.send(evt.target.result)
+      }
+    },
     //文件上传成功,接收文件路径
     handleFileSuccess(res,file){
       this.createFile(null,this.user,res.msg)
@@ -267,7 +297,7 @@ export default {
             "  </div>\n" +
             "  <div class=\"el-col el-col-2\">\n" +
             "  <span class=\"el-avatar el-avatar--circle\" style=\"height: 40px; width: 40px; line-height: 40px;\">\n" +
-            " <img src=\""+nowUser.avatar+"\" style=\"object-fit: cover;\">\n" +
+            " <img src=\""+nowUser.avatar+"\" style=\"object-fit: none;\">\n" +
             "  </span>\n" +
             "  </div>\n" +
             "</div>";
@@ -276,7 +306,7 @@ export default {
         html = "<div class=\"el-row\" style=\"padding: 5px 0\">\n" +
             "  <div class=\"el-col el-col-2\" style=\"text-align: right\">\n" +
             "  <span class=\"el-avatar el-avatar--circle\" style=\"height: 40px; width: 40px; line-height: 40px;\">\n" +
-            " <img src=\""+remoteUser.avatar+"\" style=\"object-fit: cover;\">\n" +
+            " <img src=\""+remoteUser.avatar+"\" style=\"object-fit: scale-down;\">\n" +
             "  </span>\n" +
             "  </div>\n" +
             "  <div class=\"el-col el-col-22\" style=\"text-align: left; padding-left: 10px\">\n" +
