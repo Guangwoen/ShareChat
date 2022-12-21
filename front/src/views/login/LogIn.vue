@@ -47,10 +47,10 @@ export default {
         this.form.judge=true
         return;
       }
-      this.$router.push({
+      /*this.$router.push({
         path:'/shareChat'
-      })
-      /*let _this=this
+      })*/
+      let _this=this
       this.$http.post('http://127.0.0.1:8888/api/user/login',{
           id:userId,
           password:_this.$md5(password)
@@ -69,7 +69,7 @@ export default {
           }
       }).catch(function (error){
         console.log(error)
-      })*/
+      })
     },
     register: function (){
       this.$router.push({
