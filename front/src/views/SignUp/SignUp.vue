@@ -163,10 +163,7 @@ export default {
       alert("error")
     },
     handleAvatarSuccess(res, file) {
-      alert(res.msg)
-      //this.ruleForm.imageUrl = URL.createObjectURL(file.raw);
       this.ruleForm.imageUrl=res.msg
-      // alert(this.ruleForm.imageUrl+"=====")
     },
     beforeAvatarUpload(file) {
       const isJPG = file.type === "image/png" || "image/jpg" || "image/jpeg";

@@ -13,13 +13,6 @@
           </div>
         </el-card>
         <el-divider></el-divider>
-<!--        <div class="block" style="width: 400px; height: 100px">-->
-<!--          <el-carousel indicator-position="outside" trigger="click" height="250px" width="100%" :autoplay="false">-->
-<!--            <el-carousel-item v-for="item in 4" :key="item">-->
-<!--              <div style="height: 350px; overflow:auto; border-top: 1px solid #ccc" v-html="content"></div>-->
-<!--            </el-carousel-item>-->
-<!--          </el-carousel>-->
-<!--        </div>-->
       </el-col>
       <el-col :span="10">
         <div style="width: 800px; margin: 0 auto; background-color: white;
@@ -28,10 +21,45 @@
             <el-avatar v-show="$store.state.curFriend.userId" id="avatar" size="middle" :src="$store.state.curFriend.avatar" style="margin-top: 10px;margin-left: 10px"/>
             <span style="margin-bottom: 100px;margin-left: 15px; font-size: x-large">{{$store.state.curFriend.username}}</span>
           </div>
-
 <!--          消息框-->
           <div id="interact" style="height: 350px; overflow:auto; border-top: 1px solid #ccc" v-html="content"></div>
-
+          <div style="height: 25px; overflow:auto; border-top: 1px solid #ccc;">
+            <div class="upDemo">
+              <!--文件-->
+              <el-upload
+                  class="upload-demo"
+                  action="https://jsonplaceholder.typicode.com/posts/"
+                  :before-upload="beforeFileUpload"
+                  :success="handleFileSuccess"
+                  :show-file-list="false"
+                  style="display: inline-block"
+              >
+                <i class="el-icon-folder-opened" style="margin-left: 10px"></i>
+              </el-upload>
+              <!--图片-->
+              <el-upload
+                  class="upload-demo"
+                  action="https://jsonplaceholder.typicode.com/posts/"
+                  :before-upload="beforeImgUpload"
+                  :success="handleImgSuccess"
+                  :show-file-list="false"
+                  style="display: inline-block"
+              >
+                <i class="el-icon-picture-outline" style="margin-left: 10px"></i>
+              </el-upload>
+              <!--视频-->
+              <el-upload
+                  class="upload-demo"
+                  action="https://jsonplaceholder.typicode.com/posts/"
+                  :before-upload="beforeVideoUpload"
+                  :success="handleVideoSuccess"
+                  :show-file-list="false"
+                  style="display: inline-block"
+              >
+                <i class="el-icon-video-camera" style="margin-left: 10px"></i>
+              </el-upload>
+            </div>
+          </div>
           <div style="height: 200px">
             <textarea v-model="text" style="height: 100%; width: 100%; padding: 0; border: none; border-top: 1px solid #ccc;
              border-bottom: 1px solid #ccc; outline: none; font-size: 25px; resize:none" >
@@ -103,6 +131,65 @@ export default {
     })
   },
   methods: {
+    //文件上传成功,接收文件路径
+    handleFileSuccess(res,file){
+      this.createFile(null,this.user,res.msg)
+    },
+    //文件上传前进行校验
+    beforeFileUpload(file){
+      const isLt2M = file.size / 1024 / 1024 < 100;
+      if (!isLt2M) {
+        this.$message.error("上传文件大小不能超过 100MB!");
+      }
+      return isLt2M;
+    },
+    handleImgSuccess(res,file){
+      alert("img")
+      //res.msg返回图片路径
+      this.createImg(null,this.user,res.msg)
+    },
+    //文件上传前进行校验
+    beforeImgUpload(file){
+      let isImg=""
+      let ans=["image/png","image/jpg","image/jpeg"]
+      ans.forEach(ans=>{
+        if (file.type===ans){
+          isImg=true
+        }
+      })
+      const isLt2M = file.size / 1024 / 1024 < 100;
+      if (!isImg) {
+        this.$message.error("上传头像图片只能是 JPG/PNG/JPEG 格式!");
+      }
+      if (!isLt2M) {
+        this.$message.error("上传文件大小不能超过 100MB!");
+      }
+      return isLt2M&&isImg;
+    },
+    handleVideoSuccess(res,file){
+      //res.msg返回视频路径
+      this.createVideo(null,this.user,res.msg)
+    },
+    //文件上传前进行校验
+    beforeVideoUpload(file){
+      let isVideo=""
+      let ans=["video/mp4"]
+      ans.forEach(ans=>{
+        if (file.type===ans){
+          isVideo=true
+        }
+      })
+      const isLt2M = file.size / 1024 / 1024 < 100;
+      if (!isVideo) {
+        this.$message.error("上传视频只能是 MP4 格式!");
+      }
+      if (!isLt2M) {
+        this.$message.error("上传文件大小不能超过 100MB!");
+      }
+      let videoUrl="C:\\Users\\86152\\Desktop\\demo.mp4"
+      return isLt2M&&isVideo;
+    },
+    //shareChat
     share(){
 
     },
@@ -168,6 +255,120 @@ export default {
         }
       }
     },
+    createVideo(remoteUser, nowUser, texts){
+      let html = "";
+      // 当前用户消息
+      if (nowUser) { // nowUser 表示是否显示当前用户发送的聊天消息，绿色气泡
+        html = "<div class=\"el-row\" style=\"padding: 5px 0\">\n" +
+            "  <div class=\"el-col el-col-22\" style=\"text-align: right; padding-right: 10px\">\n" +
+            "    <div class=\"tip left\">" +
+            " <video src=\""+texts+"\" controls='controls'>\n"
+            + "</div>\n" +
+            "  </div>\n" +
+            "  <div class=\"el-col el-col-2\">\n" +
+            "  <span class=\"el-avatar el-avatar--circle\" style=\"height: 40px; width: 40px; line-height: 40px;\">\n" +
+            " <img src=\""+nowUser.avatar+"\" style=\"object-fit: cover;\">\n" +
+            "  </span>\n" +
+            "  </div>\n" +
+            "</div>";
+      } else if (remoteUser) {   // remoteUser表示远程用户聊天消息，蓝色的气泡
+        console.log("flag: " + texts)
+        html = "<div class=\"el-row\" style=\"padding: 5px 0\">\n" +
+            "  <div class=\"el-col el-col-2\" style=\"text-align: right\">\n" +
+            "  <span class=\"el-avatar el-avatar--circle\" style=\"height: 40px; width: 40px; line-height: 40px;\">\n" +
+            " <img src=\""+remoteUser.avatar+"\" style=\"object-fit: cover;\">\n" +
+            "  </span>\n" +
+            "  </div>\n" +
+            "  <div class=\"el-col el-col-22\" style=\"text-align: left; padding-left: 10px\">\n" +
+            "    <div class=\"tip right\">" +
+            " <video src=\""+texts+"\" controls='controls'>\n"
+            + "</div>\n" +
+            "  </div>\n" +
+            "</div>";
+      }//渲染消息到页面
+      console.log(html)
+      this.content += html;
+      this.$nextTick(() => {//将聊天框高度拉到最低
+        let msg = document.getElementById('interact') // 获取对象
+        msg.scrollTop = msg.scrollHeight // 滚动高度
+      })
+    },
+    createFile(remoteUser, nowUser, texts){
+      let html = "";
+      // 当前用户消息
+      if (nowUser) { // nowUser 表示是否显示当前用户发送的聊天消息，绿色气泡
+        html = "<div class=\"el-row\" style=\"padding: 5px 0\">\n" +
+            "  <div class=\"el-col el-col-22\" style=\"text-align: right; padding-right: 10px\">\n" +
+            "    <div class=\"tip left\">" +
+            " <a href=\""+texts+"\"/>\n"+texts+"</a>\n"
+            + "</div>\n" +
+            "  </div>\n" +
+            "  <div class=\"el-col el-col-2\">\n" +
+            "  <span class=\"el-avatar el-avatar--circle\" style=\"height: 40px; width: 40px; line-height: 40px;\">\n" +
+            " <img src=\""+nowUser.avatar+"\" style=\"object-fit: cover;\">\n" +
+            "  </span>\n" +
+            "  </div>\n" +
+            "</div>";
+      } else if (remoteUser) {   // remoteUser表示远程用户聊天消息，蓝色的气泡
+        console.log("flag: " + texts)
+        html = "<div class=\"el-row\" style=\"padding: 5px 0\">\n" +
+            "  <div class=\"el-col el-col-2\" style=\"text-align: right\">\n" +
+            "  <span class=\"el-avatar el-avatar--circle\" style=\"height: 40px; width: 40px; line-height: 40px;\">\n" +
+            " <img src=\""+remoteUser.avatar+"\" style=\"object-fit: cover;\">\n" +
+            "  </span>\n" +
+            "  </div>\n" +
+            "  <div class=\"el-col el-col-22\" style=\"text-align: left; padding-left: 10px\">\n" +
+            "    <div class=\"tip right\">" +
+            " <a href=\""+texts+"\"/>\n"+texts+"</a>\n"
+            + "</div>\n" +
+            "  </div>\n" +
+            "</div>";
+      }//渲染消息到页面
+      console.log(html)
+      this.content += html;
+      this.$nextTick(() => {//将聊天框高度拉到最低
+        let msg = document.getElementById('interact') // 获取对象
+        msg.scrollTop = msg.scrollHeight // 滚动高度
+      })
+    },
+    createImg(remoteUser, nowUser, texts){
+      let html = "";
+      // 当前用户消息
+      if (nowUser) { // nowUser 表示是否显示当前用户发送的聊天消息，绿色气泡
+        html = "<div class=\"el-row\" style=\"padding: 5px 0\">\n" +
+            "  <div class=\"el-col el-col-22\" style=\"text-align: right; padding-right: 10px\">\n" +
+            "    <div class=\"tip left\">" +
+            " <img src=\""+texts+"\">\n"
+            + "</div>\n" +
+            "  </div>\n" +
+            "  <div class=\"el-col el-col-2\">\n" +
+            "  <span class=\"el-avatar el-avatar--circle\" style=\"height: 40px; width: 40px; line-height: 40px;\">\n" +
+            " <img src=\""+nowUser.avatar+"\" style=\"object-fit: cover;\">\n" +
+            "  </span>\n" +
+            "  </div>\n" +
+            "</div>";
+      } else if (remoteUser) {   // remoteUser表示远程用户聊天消息，蓝色的气泡
+        console.log("flag: " + texts)
+        html = "<div class=\"el-row\" style=\"padding: 5px 0\">\n" +
+            "  <div class=\"el-col el-col-2\" style=\"text-align: right\">\n" +
+            "  <span class=\"el-avatar el-avatar--circle\" style=\"height: 40px; width: 40px; line-height: 40px;\">\n" +
+            " <img src=\""+remoteUser.avatar+"\" style=\"object-fit: cover;\">\n" +
+            "  </span>\n" +
+            "  </div>\n" +
+            "  <div class=\"el-col el-col-22\" style=\"text-align: left; padding-left: 10px\">\n" +
+            "    <div class=\"tip right\">" +
+            " <img src=\""+texts+"\">\n"
+            + "</div>\n" +
+            "  </div>\n" +
+            "</div>";
+      }//渲染消息到页面
+      console.log(html)
+      this.content += html;
+      this.$nextTick(() => {//将聊天框高度拉到最低
+        let msg = document.getElementById('interact') // 获取对象
+        msg.scrollTop = msg.scrollHeight // 滚动高度
+      })
+    },
     createContent(remoteUser, nowUser, texts) {  // 这个方法是用来将 json的聊天消息数据转换成 html的。
       let html = "";
       // 当前用户消息
@@ -222,6 +423,9 @@ export default {
         };
         //  浏览器端收消息，获得从服务端发送过来的文本消息
         socket.onmessage = function (msg) {
+          //根据传输进来的消息类型，如图片，视频等，调用不同的方法进行渲染
+
+
           console.log("收到数据====" + msg.data)
           this_.createContent(true, null, msg.data)
         };
@@ -401,6 +605,9 @@ export default {
 }
 .left {
   background-color: forestgreen;
+}
+.upDemo{
+  display: inline;
 }
 </style>
 

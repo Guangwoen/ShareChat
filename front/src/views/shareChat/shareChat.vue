@@ -1,7 +1,7 @@
 <template>
   <div id="shareChat">
     <el-container id="index" style="height: 100%; border: 1px solid #eee">
-      <el-aside width="auto">
+      <el-aside width="300px">
         <MyCard/>
       </el-aside>
       <el-container id="right">
