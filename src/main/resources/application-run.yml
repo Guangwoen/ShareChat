@@ -4,25 +4,22 @@ spring:
       max-file-size: 100MB
       max-request-size: 500MB
   redis:
-    host: localhost
+    host: 139.159.232.117
     port: 6379
     password: 123456
   data:
     cassandra:
       keyspace-name: scbase
-      contact-points: 127.0.0.1
+      contact-points: 139.159.232.117
       port: 9042
       local-datacenter: datacenter1
-      username: sharechat
-      password: sharechat542
+      username: cassandra
+      password: cassandra
   datasource:
     username: root
     password: 123456
-    url: jdbc:mysql://localhost:3306/sharechat?useUnicode=true&useSSL=true
+    url: jdbc:mysql://139.159.232.117:3306/sharechat?useUnicode=true&useSSL=true
     driver-class-name: com.mysql.cj.jdbc.Driver
-  kafka:
-    producer:
-      bootstrap-servers: 127.0.0.1:9092
   devtools:
     restart:
       enabled: true
@@ -33,7 +30,7 @@ spring:
     hibernate:
       ddl-auto: update
   neo4j:
-    uri: neo4j://localhost:7687
+    uri: neo4j://139.159.232.117:7687
     authentication:
       username: neo4j
       password: ecnu542_

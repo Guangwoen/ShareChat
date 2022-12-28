@@ -6,11 +6,13 @@ import org.springframework.stereotype.Component;
 import sharechat.com.entity.Message;
 import sharechat.com.repository.MessageRepository;
 import sharechat.com.util.SnowflakeHelper;
+import sharechat.com.util.oss.AliyunOSSUtil;
 
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
-import java.io.IOException;
+import java.io.*;
+import java.nio.ByteBuffer;
 import java.util.Collections;
 import java.time.Instant;
 import java.util.concurrent.ConcurrentHashMap;
@@ -128,9 +130,26 @@ public class WebSocketService {
         // 转发消息
     }
 
+    @OnMessage
+    public void onMessage(@PathParam("sender") String sender,
+                          @PathParam("receiver") String receiver,
+                          byte[] stream,
+                          Session session) throws FileNotFoundException {
+        System.out.println("flag here");
+
+        /* TODO 将图片存储到云端，并存储地址 */
+
+    }
+
     @OnError
     public void onError(Session session, Throwable error) throws IOException {
         error.printStackTrace();
+    }
+
+    public void sendMessage(byte[] message, String sender, String receiver) throws IOException {
+        ByteBuffer stream = ByteBuffer.wrap(message);
+        webSocketServices.get(makeKey(receiver, sender))
+                .getBasicRemote().sendBinary(stream);
     }
 
     /**

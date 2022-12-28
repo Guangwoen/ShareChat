@@ -29,7 +29,7 @@ public class TokenInterceptor implements HandlerInterceptor {
                              @NonNull HttpServletResponse response,
                              @NonNull Object handler) throws Exception {
         // 在此判断是否登陆
-        String token = request.getHeader("token");
+        /*String token = request.getHeader("token");
         if(token==null){
             throw new RuntimeException("无token，请重新登录");
         }
@@ -50,7 +50,7 @@ public class TokenInterceptor implements HandlerInterceptor {
             jwtVerifier.verify(token);
         }catch (JWTVerificationException jwtVerificationException){
             throw new RuntimeException("401");
-        }
+        }*/
         return true;
     }
 

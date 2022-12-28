@@ -10,7 +10,8 @@
 Welcome<br/><label for="text"></label><input id="text" type="text"/>
 <br/>
 请指定用户<br/><label for="linkNode"></label><input id="linkNode" type="text"/>
-<button onclick="send()">发送消息</button>
+<input type="file" id="file"/>
+<button onclick="sendFile()">发送消息</button>
 <hr/>
 <button onclick="openWebSocket()">开启WebSocket连接</button>
 <button onclick="closeWebSocket()">关闭WebSocket连接</button>
@@ -52,7 +53,8 @@ Welcome<br/><label for="text"></label><input id="text" type="text"/>
       }
 
       //连接关闭的回调方法
-      websocket.onclose = function () {
+      websocket.onclose = function (event) {
+        console.log(event);
         setMessageInnerHTML("WebSocket连接关闭");
       }
 
@@ -64,6 +66,20 @@ Welcome<br/><label for="text"></label><input id="text" type="text"/>
     else {
       alert('当前浏览器不支持websocket')
     }
+  }
+
+  let fileUploadSize = 0;
+
+  function sendFile() {
+    var inputFile = document.getElementById('file').files[0];
+    let dist = inputFile.size < fileUploadSize + 1024 ? file.size : fileUploadSize + 1024;
+    let blob = inputFile.slice(fileUploadSize, dist);
+    var reader = new FileReader();
+    reader.onload = evt => {
+      var binaryString = evt.target.result;
+      websocket.send(binaryString);
+    }
+    reader.readAsArrayBuffer(blob);
   }
 
   //发送消息
