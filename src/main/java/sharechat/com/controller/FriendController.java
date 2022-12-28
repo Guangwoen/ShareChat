@@ -18,10 +18,6 @@ public class FriendController {
         this.friendService = friendService;
     }
 
-    /* TODO 1. 发送好友申请
-    *       2. 删除好友
-    *       3. 接受好友申请*/
-
     @GetMapping("/match")
     public Result<List<Map<String, ?>>> searchUser(@RequestParam("userId") String id,
                                                    @RequestParam("info") String info) {
