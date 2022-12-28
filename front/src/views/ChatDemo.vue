@@ -117,7 +117,7 @@ export default {
       circleUrl: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
       user: {},
       isCollapse: false,
-      users: [],//好友
+      users: [],//在线好友
       chatUser: {},
       text: "",
       messages: [],
@@ -126,6 +126,14 @@ export default {
   },
   created() {
     this.init()
+    let _this=this
+    //获取在线用户
+    this.$http.get("http://127.0.0.1:8888/api/user/getAllOnlineUsers",{
+      params:{
+        userId:_this.$store.state.info.userId
+      }}).then(function (res){
+        _this.users=res.data.data
+    })
     // this.initDemo()
   },
   mounted() {
