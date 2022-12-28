@@ -3,6 +3,7 @@ package sharechat.com.repository;
 import org.springframework.data.cassandra.repository.AllowFiltering;
 import org.springframework.data.cassandra.repository.CassandraRepository;
 import org.springframework.data.cassandra.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import sharechat.com.entity.Message;
 
@@ -77,4 +78,6 @@ public interface MessageRepository extends CassandraRepository<Message, String> 
      * */
     @Query("update chatting set isreceived = ?3 where msgid = ?0 and msgsendtime = ?1 and senderid = ?2")
     void updateIsReceived(String msgId, String msgsendtime, String senderid,  boolean value);
+
+
 }

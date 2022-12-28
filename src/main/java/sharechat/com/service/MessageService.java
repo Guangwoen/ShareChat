@@ -1,5 +1,7 @@
 package sharechat.com.service;
 
+import org.springframework.data.cassandra.core.cql.keyspace.ColumnChangeSpecification;
+import org.springframework.data.cassandra.core.cql.keyspace.ColumnSpecification;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -180,4 +182,11 @@ public class MessageService {
         List<Message> list = messageRepository.findOffLineMessagesByChannelIdFull(channelId);
         return list.size() != 0;
     }
+
+
+    public List<Message> getChannelMessages(String channelId){
+        return messageRepository.findMessagesByChannelId(channelId);
+    }
+
+
 }
