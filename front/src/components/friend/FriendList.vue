@@ -26,7 +26,7 @@
 
     <el-dialog :visible.sync="dialogVisible" width="30%" append-to-body>
 <!--      传递用户信息至该组件-->
-      <UserInfo :UserInfo="friendLists[this.index]"></UserInfo>
+      <UserInfo :UserInfo="curFri"></UserInfo>
     </el-dialog>
   </div>
 
@@ -45,11 +45,27 @@ export default {
       index:0,
       dialogVisible: false,
       visible: false,
-      friendLists: []
+      friendLists: [],
+      curFri:{}
     }
   },
   methods:{
     checkInfo(index){
+      let _this=this
+      //初始化用户信息
+      this.$http.get("http://127.0.0.1:8888/api/user/showUserInfo",{
+        params:{
+          userId:_this.friendLists[index].userId
+        }
+      }).then(res=>{
+        if(res.data.data.result){
+          _this.curFri=res.data.data
+          console.log(_this.curFri)
+        }
+        else{
+          console.log("error")
+        }
+      })
       this.dialogVisible = true
       this.index=index
     },
@@ -76,23 +92,25 @@ export default {
       this.$emit('close')
       Bus.$emit('sendmsg',fri)
       //Bus.$emit('sendmsg',this.friendLists[index])
+    },
+    initFriList(){
+      let _this=this
+      axios.post("http://127.0.0.1:8888/api/friend/friends",{
+        name:_this.$store.state.info.userId
+      }).then(res=>{
+        console.log(res.data.data)
+        _this.friendLists=res.data.data
+        for (let i = 0; i < _this.friendLists.length; i++) {
+          _this.friendLists[i].avatar="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
+        }
+      }).catch(function (error){
+        console.log(error)
+      })
     }
   },
   created() {
     //获取朋友列表
-    let _this=this
-    axios.post("http://127.0.0.1:8888/api/friend/friends",{
-      name:_this.$store.state.info.userId
-    }).then(res=>{
-      console.log(res.data.data)
-      _this.friendLists=res.data.data
-      for (let i = 0; i < _this.friendLists.length; i++) {
-        _this.friendLists[i].avatar="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
-      }
-      }).catch(function (error){
-        console.log(error)
-      })
-    // id（邮箱）,用户名, 学校/公司, 年龄, 性别，头像, 地址（省/市）,个性签名（个人描述）, 待定:（朋友圈）
+    this.initFriList()
   }
 }
 </script>

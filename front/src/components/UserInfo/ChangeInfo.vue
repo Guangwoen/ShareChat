@@ -103,6 +103,8 @@ export default {
   methods:{
     handleAvatarSuccess(res, file) {
       this.ruleForm.imageUrl=res.msg
+      this.$store.state.userInfo.avatar=res.msg
+      alert(this.$store.state.userInfo.avatar)
     },
     beforeAvatarUpload(file) {
       const isJPG = file.type === "image/png" || "image/jpg" || "image/jpeg";
@@ -113,7 +115,6 @@ export default {
       if (!isLt2M) {
         this.$message.error("上传头像图片大小不能超过 2MB!");
       }
-      alert(file.raw)
       return isJPG && isLt2M;
     },
     submitForm(formName) {

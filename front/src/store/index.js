@@ -11,7 +11,8 @@ export default new Vuex.Store({
     info:{
       userId:"",
       username:"tyrion",
-      password:""
+      password:"",
+      avatar:""
     },
     userInfo:{
 

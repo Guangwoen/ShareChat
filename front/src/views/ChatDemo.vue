@@ -121,25 +121,20 @@ export default {
       chatUser: {},
       text: "",
       messages: [],
-      content: ''
+      content: '',
+      timer:null
     }
   },
   created() {
-    //this.init()
-    let _this=this
-    //获取在线用户
-    this.$http.get("http://127.0.0.1:8888/api/user/getAllOnlineUsers",{
-      params:{
-        userId:_this.$store.state.info.userId
-      }}).then(function (res){
-        _this.users=res.data.data.onlineFriends;
-
-      for (let i = 0; i < _this.users.length; i++) {
-        _this.users[i].avatar="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
-      }
-        console.log(res.data.data)
-    })
-    // this.initDemo()
+    this.getOnlineUsers()
+    this.timer = window.setInterval(() => {
+      setTimeout(this.getOnlineUsers(), 0);
+    }, 2000);
+  },
+  destroyed() {
+    //离开页面是销毁
+    clearInterval(this.timer);
+    this.timer = null;
   },
   mounted() {
     Bus.$on('sendmsg',user=>{
@@ -147,6 +142,21 @@ export default {
     })
   },
   methods: {
+    getOnlineUsers(){
+      let _this=this
+      //获取在线用户
+      this.$http.get("http://127.0.0.1:8888/api/user/getAllOnlineUsers",{
+        params:{
+          userId:_this.$store.state.info.userId
+        }}).then(function (res){
+        _this.users=res.data.data.onlineFriends;
+
+        for (let i = 0; i < _this.users.length; i++) {
+          _this.users[i].avatar="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
+        }
+        console.log(res.data.data)
+      })
+    },
     uploadImg(file){
       let isImg=""
       let ans=["image/png","image/jpg","image/jpeg"]

@@ -14,7 +14,7 @@
         </el-menu-item-group>
       </el-submenu>
       <el-menu-item index="2">
-        <i class="el-icon-user-solid" @click="drawer = true"/>
+        <i class="el-icon-user-solid" @click="friList"/>
         <span slot="title">联系人</span>
       </el-menu-item>
       <el-menu-item index="3">
@@ -31,7 +31,7 @@
       </el-menu-item>
     </el-menu>
     <el-drawer title="好友列表" :visible.sync="drawer" :direction="direction" >
-      <FriendList :drawer="drawer" @close="drawer=false"/>
+      <FriendList ref="child" :drawer="drawer" @close="drawer=false"/>
     </el-drawer>
     <el-drawer title="消息列表" :visible.sync="msgVisible" :direction="msgdir" style="width: 65%">
       <ChatList @close="msgVisible=false"></ChatList>
@@ -116,8 +116,13 @@ export default {
       })
     },
     getChat(flag){
+
       this.msgImg=require('@/assets/img/img.png')
       this.msgVisible=true
+    },
+    friList(){
+      this.drawer = true
+      this.$refs.child.initFriList();
     },
     handleOpen(key, keyPath) {
       console.log(key, keyPath);

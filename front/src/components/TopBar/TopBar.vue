@@ -167,7 +167,24 @@ export default {
   computed:{
 
   },
-
+  created() {
+    let _this=this
+    //初始化用户信息
+    this.$http.get("http://127.0.0.1:8888/api/user/showUserInfo",{
+      params:{
+        userId:_this.$store.state.info.userId
+      }
+    }).then(res=>{
+      if(res.data.data.result){
+        _this.linkNode=res.data.data
+        _this.$store.state.userInfo=_this.linkNode
+        console.log(_this.linkNode)
+      }
+      else{
+        console.log("error")
+      }
+    })
+  },
   mounted() {
     this.linkNode.userId=this.$store.state.info.userId
   }
