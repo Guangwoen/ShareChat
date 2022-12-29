@@ -67,9 +67,15 @@ export default {
       console.log(this.friendLists)
     },
     sendMessage(index){
-      this.$store.state.curFriend=this.friendLists[index]
+      console.log(this.friendLists[index])
+      let fri={
+        "name":this.friendLists[index].name,
+        "id":this.friendLists[index].userId,
+        "avatar":"https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
+      }
       this.$emit('close')
-      Bus.$emit('sendmsg',this.friendLists[index])
+      Bus.$emit('sendmsg',fri)
+      //Bus.$emit('sendmsg',this.friendLists[index])
     }
   },
   created() {
@@ -78,48 +84,15 @@ export default {
     axios.post("http://127.0.0.1:8888/api/friend/friends",{
       name:_this.$store.state.info.userId
     }).then(res=>{
+      console.log(res.data.data)
       _this.friendLists=res.data.data
+      for (let i = 0; i < _this.friendLists.length; i++) {
+        _this.friendLists[i].avatar="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
+      }
       }).catch(function (error){
         console.log(error)
       })
     // id（邮箱）,用户名, 学校/公司, 年龄, 性别，头像, 地址（省/市）,个性签名（个人描述）, 待定:（朋友圈）
-    /*this.friendLists=[{
-      userId:"1",
-      username:"1",
-      organization:"华东师范大学",
-      age:12,
-      gender:"male",
-      avatar:"https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png",
-      description:"乐",
-      address: '上海市普陀区'
-    }, {
-      userId:"2",
-      username:"2",
-      organization:"华东师范大学",
-      age:12,
-      gender:"male",
-      avatar:"https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png",
-      description:"乐",
-      address: '上海市普陀区'
-    }, {
-      userId:"3",
-      username:"3",
-      organization:"华东师范大学",
-      age:12,
-      gender:"male",
-      avatar:"https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png",
-      description:"乐",
-      address: '上海市普陀区'
-    }, {
-      userId:"4",
-      username:"4",
-      organization:"华东师范大学",
-      age:12,
-      gender:"male",
-      avatar:"https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png",
-      description:"乐",
-      address: '上海市普陀区'
-    }]*/
   }
 }
 </script>

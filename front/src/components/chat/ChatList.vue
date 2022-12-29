@@ -44,7 +44,14 @@ export default {
     //查看信息
     checkMessage(index){
       this.friendLists[index].unread=0
-      Bus.$emit('sendmsg',this.friendLists[index])
+      let fri={
+        "name":this.friendLists[index].username,
+        "id":this.friendLists[index].userId,
+        "avatar":"https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
+      }
+      console.log(this.friendLists[index])
+      console.log(fri)
+      Bus.$emit('sendmsg',fri)
       this.$emit('close')
     }
   },
@@ -61,7 +68,9 @@ export default {
       }}).then(function (res){
         console.log(res.data.data)
       _this.friendLists=res.data.data
-      let demo="2022-06-14T09:36:41.180127"
+      for (let i = 0; i < _this.friendLists.length; i++) {
+        _this.friendLists[i].avatar="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
+      }
       let now=moment.utc().local().format('YYYY-MM-DD')//当前时间
       for (let i = 0; i < _this.friendLists.length; i++) {
         let fri=_this.friendLists[i]
