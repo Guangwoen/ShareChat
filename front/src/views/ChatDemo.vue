@@ -458,7 +458,8 @@ export default {
         socket.onmessage = function (msg) {
           //根据传输进来的消息类型，如图片，视频等，调用不同的方法进行渲染
           console.log("收到数据====" + msg.data)
-          this_.createContent(this_.$store.curFriend, null, msg.data)
+          console.log(this_.$store.state.curFriend)
+          this_.createContent(this_.$store.state.curFriend, null, msg.data)
         };
         //关闭事件
         socket.onclose = function () {
