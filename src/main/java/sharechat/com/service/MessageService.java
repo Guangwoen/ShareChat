@@ -52,9 +52,11 @@ public class MessageService {
     public List<Map<String, ?>> getLatestMessageList(String id) {
         List<Map<String, ?>> returnLst = new ArrayList<>();
         List<LinkNode> lst = friendService.getAllFriend(id);
+        System.out.println(lst);
         for(LinkNode e: lst) {
             Map<String, Object> mp = new HashMap<>();
             Message latest = getLastFull(id, e.getName());
+            System.out.println(latest);
             if(latest != null) {
                 mp.put("msg", latest.getMsgBody());
                 mp.put("time", latest.getMsgsendTime());

@@ -63,7 +63,7 @@ public class MessageController {
 
     @GetMapping(value = "/list")
     public Result<List<Map<String, ?>>> getListById(@RequestParam("userId") String id) {
-        System.out.println(id);
+        System.out.println("-----"+id+"-----");
         return Result.success(messageService.getLatestMessageList(id));
     }
 

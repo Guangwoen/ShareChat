@@ -133,14 +133,15 @@ export default {
           //提交表单
           let userInfo={
             id:_this.$store.state.info.userId,
-            name:_this.ruleForm.userName===""?_this.ruleForm.userName: _this.$store.state.userInfo.username,
-            workplace:_this.ruleForm.organization===""?_this.ruleForm.organization: _this.$store.state.userInfo.organization,
-            region:_this.ruleForm.address===""?_this.ruleForm.address: _this.$store.state.userInfo.address,
-            age:_this.ruleForm.age===""?_this.ruleForm.age: _this.$store.state.userInfo.age,
-            gender:_this.ruleForm.gender===""?_this.ruleForm.gender: _this.$store.state.userInfo.gender,
-            signature:_this.ruleForm.description===""?_this.ruleForm.description: _this.$store.state.userInfo.description,
-            headPicture:_this.ruleForm.imageUrl===""?_this.ruleForm.imageUrl: _this.$store.state.userInfo.imageUrl
+            name:_this.ruleForm.userName===undefined?_this.$store.state.userInfo.username:_this.ruleForm.userName,
+            workplace:_this.ruleForm.organization===undefined? _this.$store.state.userInfo.organization:_this.ruleForm.organization,
+            region:_this.ruleForm.address===undefined? _this.$store.state.userInfo.address:_this.ruleForm.address,
+            age:_this.ruleForm.age===undefined? _this.$store.state.userInfo.age:_this.ruleForm.age,
+            gender:_this.ruleForm.gender===undefined? _this.$store.state.userInfo.gender:_this.ruleForm.gender,
+            signature:_this.ruleForm.description===undefined? _this.$store.state.userInfo.description:_this.ruleForm.description,
+            headPicture:_this.ruleForm.imageUrl===undefined? _this.$store.state.userInfo.imageUrl:_this.ruleForm.imageUrl
           }
+          console.log(_this.ruleForm);
           console.log(userInfo)
           this.$http.put("http://127.0.0.1:8888/api/user/updateUserInfo",userInfo).then((res) => {
             console.log(res)

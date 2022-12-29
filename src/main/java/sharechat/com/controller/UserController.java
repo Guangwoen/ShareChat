@@ -74,7 +74,8 @@ public class UserController {
     }
 
     @PostMapping("/logout")
-    public boolean logout(@RequestBody String id, HttpServletRequest request){
+    public boolean logout(@RequestBody Map info, HttpServletRequest request){
+        String id=(String)info.get("userId");
         userRepository.noOnline(id);
         HttpSession session=request.getSession();
         session.removeAttribute("user");
@@ -149,6 +150,7 @@ public class UserController {
                     Map<String,Object>friend=new HashMap<>();
                     friend.put("id",userInfo.getId());
                     friend.put("name",userInfo.getName());
+                    friend.put("avatar",userInfo.getHeadPicture());
                     onlineFriends.add(friend);
                 }
             }

@@ -86,7 +86,7 @@ export default {
   methods: {
     logOut(){
       let _this=this
-      this.$http.post('http://127.0.0.1:8888/api/user/logout',_this.$store.state.info.userId).then(res=>{
+      this.$http.post('http://127.0.0.1:8888/api/user/logout',{userId:_this.$store.state.info.userId}).then(res=>{
         _this.$router.push({
           path:'/'
         })

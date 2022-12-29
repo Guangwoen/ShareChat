@@ -4,9 +4,9 @@
       <el-col :span="8">
         <el-card style="width: 400px; height: 100%; color: #333">
           <div style="padding-bottom: 10px; border-bottom: 1px solid #ccc">在线用户</div>
-          <div style="padding: 10px 0" v-for="user in users" :key="user.username">
-            <el-avatar v-show="user.userId" id="avatar" size="small" :src="user.avatar" style="margin-top: 10px;margin-left: 10px"/>
-            <span style="font-size: medium">{{ user.username }}</span>
+          <div style="padding: 10px 0" v-for="user in users" :key="user.name">
+            <el-avatar v-show="user.id" id="avatar" size="small" :src="user.avatar" style="margin-top: 10px;margin-left: 10px"/>
+            <span style="font-size: medium">{{ user.name }}</span>
             <i class="el-icon-chat-dot-round" style="margin-left: 10px; font-size: 16px; cursor: pointer"
                @click="selectFriend(user)"></i>
 <!--            <span style="font-size: 12px;color: limegreen; margin-left: 5px" v-if="user.username === chatUser">chatting...</span>-->
@@ -132,7 +132,8 @@ export default {
       params:{
         userId:_this.$store.state.info.userId
       }}).then(function (res){
-        _this.users=res.data.data
+        _this.users=res.data.data.onlineFriends;
+        console.log(_this.users);
     })
     // this.initDemo()
   },
