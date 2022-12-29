@@ -46,6 +46,7 @@ public interface MessageRepository extends CassandraRepository<Message, String> 
     @Query("select * from chatting where channelid = ?0 limit 1 ALLOW FILTERING")
     Message findMessagesByChannelIdLatestFull(String channelId);
 
+
     /**
      * 根据channelid获取最新的一条信息（通配符）
      *

@@ -57,7 +57,7 @@ public class MessageService {
             Map<String, Object> mp = new HashMap<>();
             //Message latest = getLastFull(id, e.getName());
             Message latest=getLastFull(id, e.getUserId());
-            System.out.println(latest);
+            System.out.println("最新消息:"+latest);
             if(latest != null) {
                 mp.put("msg", latest.getMsgBody());
                 mp.put("time", latest.getMsgsendTime());
@@ -104,10 +104,35 @@ public class MessageService {
         if(isMissingInRedis(friendId)) {
             Message m1 = listOperations.leftPop(friendId+"_"+myId);
             Message m2 = listOperations.leftPop(myId+"_"+friendId);
+            System.out.println("redis:   "+m1+"------"+m2);
             return m1.getMsgsendTime().compareTo(m2.getMsgsendTime()) < 0 ? m2 : m1;
         }
-        Message m1 = messageRepository.findMessagesByChannelIdLatestFull(myId+"_"+friendId);
-        Message m2 = messageRepository.findMessagesByChannelIdLatestFull(friendId+"_"+myId);
+        //Message m1 = messageRepository.findMessagesByChannelIdLatestFull(myId+"_"+friendId);
+        //Message m2 = messageRepository.findMessagesByChannelIdLatestFull(friendId+"_"+myId);
+        List<Message> msgs1=messageRepository.findMessagesByChannelId(myId+"_"+friendId);
+        List<Message> msgs2=messageRepository.findMessagesByChannelId(friendId+"_"+myId);
+        Message m1=new Message();
+        Message m2=new Message();
+        if(msgs1.size()>0) {
+            m1 = msgs1.get(0);
+        }else{
+            m1=null;
+        }
+        if(msgs2.size()>0) {
+            m2 = msgs2.get(0);
+        }else{
+            m2=null;
+        }
+        for(Message m:msgs1){
+            if(m.getMsgsendTime().compareTo(m1.getMsgsendTime())>0){
+                m1=m;
+            }
+        }
+        for(Message m:msgs2){
+            if(m.getMsgsendTime().compareTo(m2.getMsgsendTime())>0){
+                m2=m;
+            }
+        }
         if(m1 != null && m2 != null) {
             return m1.getMsgsendTime().compareTo(m2.getMsgsendTime()) < 0 ? m2 : m1;
         }
