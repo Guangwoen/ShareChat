@@ -55,7 +55,8 @@ public class MessageService {
         System.out.println(lst);
         for(LinkNode e: lst) {
             Map<String, Object> mp = new HashMap<>();
-            Message latest = getLastFull(id, e.getName());
+            //Message latest = getLastFull(id, e.getName());
+            Message latest=getLastFull(id, e.getUserId());
             System.out.println(latest);
             if(latest != null) {
                 mp.put("msg", latest.getMsgBody());
@@ -66,7 +67,8 @@ public class MessageService {
                 mp.put("time", null);
             }
             mp.put("username", e.getName());
-            mp.put("userId", e.getName());
+            //mp.put("userId",e.getName());
+            mp.put("userId", e.getUserId());
             mp.put("unread", isMissingInDBFull(e.getName()+"_"+id)
                     || isMissingInRedisFull(e.getName() +"_"+id));
 
