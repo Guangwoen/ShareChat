@@ -37,8 +37,8 @@ public class ShareMessageService {
 
     public void sendShareRequest(String sender, String receiver, String target) {
         ListOperations<String, String> listOperations = (ListOperations<String, String>) redisTemplate.opsForList();
-        listOperations.rightPush(prefix+sender, receiver);
-        listOperations.rightPush(receiver+suffix, target);
+        listOperations.rightPush(prefix+receiver, sender);
+        listOperations.rightPush(receiver+"_"+sender+suffix, target);
     }
 
     public boolean getShareRequest(String userId) {
