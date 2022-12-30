@@ -71,6 +71,7 @@ public class MessageService {
             mp.put("userId", e.getUserId());
             mp.put("unread", isMissingInDBFull(e.getName()+"_"+id)
                     || isMissingInRedisFull(e.getName() +"_"+id));
+            mp.put("avatar", e.getAvatar());
 
             returnLst.add(mp);
         }
