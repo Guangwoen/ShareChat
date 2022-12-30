@@ -45,9 +45,9 @@ export default {
     checkMessage(index){
       this.friendLists[index].unread=0
       let fri={
-        "name":this.friendLists[index].username,
-        "id":this.friendLists[index].userId,
-        "avatar":"https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
+        name:this.friendLists[index].username,
+        id:this.friendLists[index].userId,
+        avatar:this.friendLists[index].avatar
       }
       console.log(this.friendLists[index])
       console.log(fri)
@@ -66,6 +66,7 @@ export default {
         {params:{
                 userId: userId
       }}).then(function (res){
+        console.log(res.data.data)
       _this.friendLists=res.data.data
       let now=moment.utc().local().format('YYYY-MM-DD')//当前时间
       for (let i = 0; i < _this.friendLists.length; i++) {

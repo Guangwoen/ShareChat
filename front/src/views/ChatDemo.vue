@@ -266,9 +266,6 @@ export default {
     },
     share(index){
       let _this=this
-      console.log(this.$store.state.friends[index])
-      console.log(_this.$store.state.curFriend)
-      console.log(_this.$store.state.info)
       axios.get(
           "http://127.0.0.1:8888/api/share/shareReq", {
             params:{

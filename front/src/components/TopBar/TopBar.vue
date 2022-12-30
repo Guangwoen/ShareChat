@@ -124,13 +124,14 @@ export default {
   },
   methods: {
     agree(index){
+      this.shareVisible=false
       //userId,name,avatar
       let fri={
         "name":this.shareRequests[index].name,
         "id":this.shareRequests[index].userId,
         "avatar":this.shareRequests[index].avatar,
       }
-      Bus.$emit('sendmsg',fri)
+      Bus.$emit('shareChat',fri)
     },
     checkReport(){
       this.dotVisible=false
@@ -140,11 +141,16 @@ export default {
           userId:_this.$store.state.info.userId,
         }
       }).then(function (res){
-        _this.shareRequests=res.data.data
+        let req={
+          userId:res.data.data.userId,
+          avatar:res.data.data.avatar,
+          name:res.data.data.name
+        }
+        _this.shareRequests.push(req)
+        console.log(req)
         console.log(_this.shareRequests)
       })
       this.shareVisible=true
-      alert("check")
     },
     addFriend(index){
       let _this=this
