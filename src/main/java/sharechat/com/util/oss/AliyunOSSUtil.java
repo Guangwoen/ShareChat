@@ -27,6 +27,8 @@ public class AliyunOSSUtil {
         String bucketName = ConstantPropertiesUtils.BUCKET_NAME;
         String fileHost = ConstantPropertiesUtils.FILE_HOST;
 
+        String prefix = "https://sharechat.oss-cn-shanghai.aliyuncs.com/";
+
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         String dateStr = format.format(new Date());
 
@@ -60,8 +62,8 @@ public class AliyunOSSUtil {
             ossClient.setBucketAcl(bucketName, CannedAccessControlList.PublicRead);
             if(null != result) {
                 // logger.info("===>OSS文件上传成功, OSS地址: "+ fileUrl);
-                System.out.println("===>OSS文件上传成功, OSS地址: "+ fileUrl);
-                return fileUrl;
+                System.out.println("===>OSS文件上传成功, OSS地址: "+ prefix+fileUrl);
+                return prefix+fileUrl;
             }
         }
         catch (OSSException oe) {
