@@ -32,7 +32,7 @@ public class ShareMessageController {
     }
 
     @GetMapping("/getAllReq")
-    public Result<List<LinkNode>> getAllShareRequest(@PathParam("userId") String userId) {
+    public Result<LinkNode> getAllShareRequest(@PathParam("userId") String userId) {
         return Result.success(shareMessageService.getAllShareRequest(userId));
     }
 }

@@ -36,22 +36,16 @@ public class ShareMessageService {
     }
 
     public void sendShareRequest(String sender, String receiver, String target) {
-        ListOperations<String, String> listOperations = (ListOperations<String, String>) redisTemplate.opsForList();
-        listOperations.rightPush(prefix+receiver, sender);
-        listOperations.rightPush(receiver+"_"+sender+suffix, target);
+        redisTemplate.opsForValue().set(prefix+receiver, sender);
+        redisTemplate.opsForValue().set(receiver+"_"+sender+suffix, target);
     }
 
     public boolean getShareRequest(String userId) {
-        return redisTemplate.opsForList().size(prefix+userId) != 0;
+        String val = redisTemplate.opsForValue().get(prefix+userId);
+        return val != null && val.length() != 0;
     }
 
-    public List<LinkNode> getAllShareRequest(String userId) {
-        List<LinkNode> returnList = new ArrayList<>();
-        for(int i = 0; i < redisTemplate.opsForList().size(prefix+userId); i++) {
-            returnList.add(linkNodeRepository.getLinkNodeByUserId(
-                    redisTemplate.opsForList().leftPop(prefix+userId))
-            );
-        }
-        return returnList;
+    public LinkNode getAllShareRequest(String userId) {
+        return linkNodeRepository.getLinkNodeByUserId(redisTemplate.opsForValue().get(prefix+userId));
     }
 }
