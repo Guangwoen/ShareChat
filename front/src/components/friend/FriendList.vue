@@ -2,7 +2,9 @@
   <div>
     <el-table :data="friendLists" style="width: 100%" stripe>
       <el-table-column>
-        <el-avatar id="avatar" size="large" :src="friendLists[this.index].avatar"/>
+        <template scope="scope">
+          <el-avatar id="avatar" size="large" :src="friendLists[scope.$index].avatar"/>
+        </template>
       </el-table-column>
 
       <el-table-column>
@@ -87,7 +89,7 @@ export default {
       let fri={
         "name":this.friendLists[index].name,
         "id":this.friendLists[index].userId,
-        "avatar":"https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
+        "avatar":this.friendLists[index].avatar,
       }
       this.$emit('close')
       Bus.$emit('sendmsg',fri)
@@ -98,11 +100,8 @@ export default {
       axios.post("http://127.0.0.1:8888/api/friend/friends",{
         name:_this.$store.state.info.userId
       }).then(res=>{
-        console.log(res.data.data)
         _this.friendLists=res.data.data
-        for (let i = 0; i < _this.friendLists.length; i++) {
-          _this.friendLists[i].avatar="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
-        }
+        console.log(_this.friendLists)
       }).catch(function (error){
         console.log(error)
       })

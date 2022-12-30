@@ -2,7 +2,9 @@
   <div>
     <el-table :data="peopleList" stripe style="width: 100%">
       <el-table-column>
-        <el-avatar id="avatar" size="large" :src="peopleList[this.index].avatar"/>
+        <template scope="scope">
+          <el-avatar id="avatar" size="large" :src="peopleList[scope.$index].avatar"/>
+        </template>
       </el-table-column>
       <el-table-column>
         <template scope="scope">

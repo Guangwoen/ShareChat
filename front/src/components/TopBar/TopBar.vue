@@ -118,6 +118,7 @@ export default {
           info:_this.searchText
         }
       }).then(function (res){
+        console.log(res.data)
         _this.wantedUsers=res.data.data
       })
       this.searchText=""
@@ -152,16 +153,6 @@ export default {
               console.log("error")
             }
       })
-      /*this.linkNode = {
-        userId: this.$store.state.info.userId,
-        username: "御坂美琴",
-        organization: "常盘台中学",
-        age: 12,
-        gender: "female",
-        avatar: "https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png",
-        description: "乐",
-        address: '上海市普陀区'
-      }*/
     }
   },
   computed:{

@@ -104,7 +104,6 @@ export default {
     handleAvatarSuccess(res, file) {
       this.ruleForm.imageUrl=res.msg
       this.$store.state.userInfo.avatar=res.msg
-      alert(this.$store.state.userInfo.avatar)
     },
     beforeAvatarUpload(file) {
       const isJPG = file.type === "image/png" || "image/jpg" || "image/jpeg";

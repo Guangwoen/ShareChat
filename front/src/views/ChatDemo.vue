@@ -150,11 +150,7 @@ export default {
           userId:_this.$store.state.info.userId
         }}).then(function (res){
         _this.users=res.data.data.onlineFriends;
-
-        for (let i = 0; i < _this.users.length; i++) {
-          _this.users[i].avatar="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
-        }
-        console.log(res.data.data)
+        console.log(res.data)
       })
     },
     uploadImg(file){
@@ -250,6 +246,7 @@ export default {
       this.shareVisible=true
     },
     selectFriend(user){
+      console.log(user)
       this.$store.state.curFriend = user
       this.content=''
       //获得消息记录，渲染聊天页面
@@ -424,7 +421,7 @@ export default {
             "  </div>\n" +
             "  <div class=\"el-col el-col-2\">\n" +
             "  <span class=\"el-avatar el-avatar--circle\" style=\"height: 40px; width: 40px; line-height: 40px;\">\n" +
-            " <img src=\""+"https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"+"\" style=\"object-fit: cover;\">\n" +
+            " <img src=\""+this.$store.state.userInfo.avatar+"\" style=\"object-fit: cover;\">\n" +
             "  </span>\n" +
             "  </div>\n" +
             "</div>";
@@ -432,7 +429,7 @@ export default {
         html = "<div class=\"el-row\" style=\"padding: 5px 0\">\n" +
             "  <div class=\"el-col el-col-2\" style=\"text-align: right\">\n" +
             "  <span class=\"el-avatar el-avatar--circle\" style=\"height: 40px; width: 40px; line-height: 40px;\">\n" +
-            " <img src=\""+"https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"+"\" style=\"object-fit: cover;\">\n" +
+            " <img src=\""+this.$store.state.curFriend.avatar+"\" style=\"object-fit: cover;\">\n" +
             "  </span>\n" +
             "  </div>\n" +
             "  <div class=\"el-col el-col-22\" style=\"text-align: left; padding-left: 10px\">\n" +
@@ -481,85 +478,6 @@ export default {
         }
       }
     },
-    init() {
-      this.user={
-        userId: this.$store.state.info.userId,
-        username: "御坂美琴",
-        organization: "常盘台中学",
-        age: 12,
-        gender: "female",
-        avatar: "https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png",
-        description: "乐",
-        address: '上海市普陀区'
-      }
-      //获取在线用户
-      this.users=[{
-        userId:"1",
-        username:"1",
-        organization:"华东师范大学",
-        age:12,
-        gender:"male",
-        avatar:"https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png",
-        description:"乐",
-        address: '上海市普陀区'
-      }, {
-        userId:"2",
-        username:"2",
-        organization:"华东师范大学",
-        age:12,
-        gender:"male",
-        avatar:"https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png",
-        description:"乐",
-        address: '上海市普陀区'
-      }, {
-        userId:"3",
-        username:"3",
-        organization:"华东师范大学",
-        age:12,
-        gender:"male",
-        avatar:"https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png",
-        description:"乐",
-        address: '上海市普陀区'
-      }, {
-        userId:"4",
-        username:"4",
-        organization:"华东师范大学",
-        age:12,
-        gender:"male",
-        avatar:"https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png",
-        description:"乐",
-        address: '上海市普陀区'
-      }]
-      /*if (typeof (WebSocket) == "undefined") {
-        console.log("您的浏览器不支持WebSocket");
-      } else {
-        console.log("您的浏览器支持WebSocket");
-        let socketUrl = "ws://localhost:8888/websocket/"+this.user.userId+"/2/"+this.$store.state.curFriend.userId;
-        if (socket != null) {
-          socket.close();
-          socket = null;
-        }
-        // 开启一个websocket服务
-        socket = new WebSocket(socketUrl);
-        //打开事件
-        socket.onopen = function () {
-          console.log("websocket已打开");
-        };
-        //  浏览器端收消息，获得从服务端发送过来的文本消息
-        socket.onmessage = function (msg) {
-          console.log("收到数据====" + msg)
-          _this.createContent(this.$store.state.curFriend, null, msg)
-        };
-        //关闭事件
-        socket.onclose = function () {
-          console.log("websocket已关闭");
-        };
-        //发生了错误事件
-        socket.onerror = function () {
-          console.log("websocket发生了错误");
-        }
-      }*/
-    }
   }
 }
 

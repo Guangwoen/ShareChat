@@ -66,11 +66,7 @@ export default {
         {params:{
                 userId: userId
       }}).then(function (res){
-        console.log(res.data.data)
       _this.friendLists=res.data.data
-      for (let i = 0; i < _this.friendLists.length; i++) {
-        _this.friendLists[i].avatar="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
-      }
       let now=moment.utc().local().format('YYYY-MM-DD')//当前时间
       for (let i = 0; i < _this.friendLists.length; i++) {
         let fri=_this.friendLists[i]
