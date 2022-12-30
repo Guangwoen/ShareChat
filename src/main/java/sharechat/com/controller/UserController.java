@@ -89,7 +89,7 @@ public class UserController {
         String name=userInfo.getName();
         if(!userRepository.findById(userId).isPresent()) {
             userRepository.saveAndFlush(userInfo); // MySQL保存信息
-            friendService.saveNewUser(new LinkNode(userInfo.getId(), userInfo.getName()),
+            friendService.saveNewUser(new LinkNode(userInfo.getId(), userInfo.getName(), userInfo.getHeadPicture()),
                     new GroupNode(userInfo.getWorkplace())); // Neo4j保存信息
             boolean result;
             Map<String, Object> returnInfo = new HashMap<>();
@@ -119,6 +119,7 @@ public class UserController {
         else {
             info.setPassword(password);
             UserInfo k = userRepository.saveAndFlush(info);
+            friendService.setAvatar(info.getHeadPicture(), info.getId());
             resultMap.put("result", true);
         }
         return Result.success(resultMap);

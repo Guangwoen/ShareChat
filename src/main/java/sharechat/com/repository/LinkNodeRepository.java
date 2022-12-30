@@ -39,4 +39,9 @@ public interface LinkNodeRepository extends Neo4jRepository<LinkNode, Long> {
     List<LinkNode> getLinkNodesByUserId(String userId);
 
     List<LinkNode> getLinkNodesByName(String name);
+
+    @Query("match (n: LinkNode) " +
+            "where n.userId = $userId " +
+            "set n.avatar = $url")
+    void updateAvatar(String url, String userId);
 }

@@ -93,4 +93,8 @@ public class FriendService {
         }
         return returnLst;
     }
+
+    public void setAvatar(String url, String userId) {
+        linkNodeRepository.updateAvatar(url, userId);
+    }
 }

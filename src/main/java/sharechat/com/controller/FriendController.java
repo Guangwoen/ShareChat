@@ -31,7 +31,6 @@ public class FriendController {
      * */
     @PostMapping("/node")
     public Result<LinkNode> saveThis(@RequestBody LinkNode linkNode) {
-        /* TODO 向MySQL添加更详细的用户数据 */
         return Result.success(friendService.save(linkNode));
     }
 
