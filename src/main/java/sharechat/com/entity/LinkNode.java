@@ -21,6 +21,9 @@ public class LinkNode {
     @Property(name = "name")
     private String name;
 
+    @Property(name = "avatar")
+    private String avatar;
+
     public LinkNode(String userId, String name) {
         this.userId = userId;
         this.name = name;

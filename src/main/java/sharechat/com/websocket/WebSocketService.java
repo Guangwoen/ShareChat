@@ -5,6 +5,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import sharechat.com.entity.Message;
 import sharechat.com.repository.MessageRepository;
+import sharechat.com.repository.ShareMessageRepository;
 import sharechat.com.util.SnowflakeHelper;
 import sharechat.com.util.oss.AliyunOSSUtil;
 
@@ -19,20 +20,24 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 
 @Component
-@ServerEndpoint(value="/websocket/{sender}/2/{receiver}", configurator = EndpointConfigure.class)
+@ServerEndpoint(value="/websocket/{sender}/2/{receiver}/{type}", configurator = EndpointConfigure.class)
 public class WebSocketService {
     private static int onlineCount = 0;
 
     private final MessageRepository messageRepository;
+
+    private final ShareMessageRepository shareMessageRepository;
 
     private final RedisTemplate<String, ?> redisTemplate;
 
     private final SnowflakeHelper idGenerator;
 
     public WebSocketService(MessageRepository messageRepository,
+                            ShareMessageRepository shareMessageRepository,
                             RedisTemplate<String, ?> redisTemplate,
                             SnowflakeHelper snowflakeHelper) {
         this.messageRepository = messageRepository;
+        this.shareMessageRepository = shareMessageRepository;
         this.redisTemplate = redisTemplate;
         this.idGenerator = snowflakeHelper;
     }
@@ -98,11 +103,22 @@ public class WebSocketService {
     @OnMessage
     public void onMessage(@PathParam("sender") String sender,
                           @PathParam("receiver") String receiver,
+                          @PathParam("type") String type,
                           String message,
                           Session session) {
         System.out.println("来自客户端" + sender + "的消息:" + message);
-        ListOperations<String, Message> listOps = (ListOperations<String, Message>) redisTemplate.opsForList();
 
+        if(type.equals("only")) {
+            onlyMessage(sender, receiver, message); // 一般消息
+        }
+        else if(type.equals("shared")) {
+            sharedMessage(); // 共享消息
+        }
+        else System.out.println("类型错误");
+    }
+
+    private void onlyMessage(String sender, String receiver, String message) {
+        ListOperations<String, Message> listOps = (ListOperations<String, Message>) redisTemplate.opsForList();
         boolean isReceiverOnFace = webSocketServices.containsKey(makeKey(receiver, sender));
         System.out.println("boolean: " + isReceiverOnFace);
         // 如果在对方离线的时候发送消息
@@ -128,7 +144,10 @@ public class WebSocketService {
                 e.printStackTrace();
             }
         }
-        // 转发消息
+    }
+
+    private void sharedMessage() {
+
     }
 
     @OnMessage

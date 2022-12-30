@@ -142,7 +142,6 @@ public class MessageService {
     }
 
     public List<Map<String, String>> getRecentMessages(String myId, String friendId) {
-
         List<Message> lst1 = messageRepository.findMessagesByChannelId(myId+"_"+friendId);
         List<Message> lst2 = messageRepository.findMessagesByChannelId(friendId+"_"+myId);
         List<Message> returnList = new ArrayList<>();
