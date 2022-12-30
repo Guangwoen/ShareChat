@@ -4,6 +4,7 @@ import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import sharechat.com.entity.Message;
+import sharechat.com.entity.ShareMessage;
 import sharechat.com.repository.MessageRepository;
 import sharechat.com.repository.ShareMessageRepository;
 import sharechat.com.util.SnowflakeHelper;
@@ -146,13 +147,13 @@ public class WebSocketService {
     }
 
     private void sharedMessage(String sender, String receiver, String message) {
-        Message newMsg = new Message(
+        ShareMessage newMsg = new ShareMessage(
                 String.valueOf(idGenerator.snowflakeId()),
                 makeKey(sender, receiver),
                 sender,
                 Instant.now().toString(),
                 message,
-                null
+                false
         );
         shareMessageRepository.save(newMsg);
         try {
