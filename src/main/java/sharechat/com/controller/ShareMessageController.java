@@ -20,10 +20,10 @@ public class ShareMessageController {
     }
 
     @GetMapping("/shareReq")
-    public void sendShareRequest(@PathParam("senderId") String sender,
+    public Result<Boolean> sendShareRequest(@PathParam("senderId") String sender,
                                  @PathParam("receiverId") String receiver,
                                  @PathParam("target") String target) {
-        shareMessageService.sendShareRequest(sender, receiver, target);
+        return Result.success(shareMessageService.sendShareRequest(sender, receiver, target));
     }
 
     @GetMapping("/isShareReq")

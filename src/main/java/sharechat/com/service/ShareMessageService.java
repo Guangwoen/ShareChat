@@ -35,9 +35,14 @@ public class ShareMessageService {
         this.redisTemplate = redisTemplate;
     }
 
-    public void sendShareRequest(String sender, String receiver, String target) {
-        redisTemplate.opsForValue().set(prefix+receiver, sender);
-        redisTemplate.opsForValue().set(receiver+"_"+sender+suffix, target);
+    public boolean sendShareRequest(String sender, String receiver, String target) {
+        String val = redisTemplate.opsForValue().get(prefix+receiver);
+        if(val == null || val.length() == 0) {
+            redisTemplate.opsForValue().set(prefix+receiver, sender);
+            redisTemplate.opsForValue().set(receiver+"_"+sender+suffix, target);
+            return false;
+        }
+        return true;
     }
 
     public boolean getShareRequest(String userId) {
