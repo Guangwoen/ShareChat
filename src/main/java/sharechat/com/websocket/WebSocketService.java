@@ -60,7 +60,7 @@ public class WebSocketService {
         List<Message> msgList = listOps.range(makeKey(receiver, sender), 0, -1);
         if(msgList != null && msgList.size() != 0) {
             for(Message m: msgList) {
-                // sendMessage(m.getMsgBody(), receiver, sender);
+                sendMessage(m.getMsgBody(), receiver, sender);
                 messageRepository.save(m);
             }
             listOps.trim(makeKey(receiver, sender), 0, 0); // 从缓存中删除
@@ -71,7 +71,7 @@ public class WebSocketService {
         List<Message> dbMsgList = messageRepository.findOffLineMessage(makeKey(receiver, sender));
         if(dbMsgList != null && dbMsgList.size() != 0) {
             for(Message m: dbMsgList) {
-                // sendMessage(m.getMsgBody(), receiver, sender);
+                sendMessage(m.getMsgBody(), receiver, sender);
                 messageRepository.updateIsReceived(m.getMsgId(), m.getMsgsendTime(), m.getSenderId(), true); // 重置字段
             }
         }
