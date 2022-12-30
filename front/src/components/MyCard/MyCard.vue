@@ -116,7 +116,6 @@ export default {
       })
     },
     getChat(flag){
-
       this.msgImg=require('@/assets/img/img.png')
       this.msgVisible=true
     },

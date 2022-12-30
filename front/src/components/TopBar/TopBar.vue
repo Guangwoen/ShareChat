@@ -6,8 +6,8 @@
     <el-breadcrumb separator="">
       <el-breadcrumb-item>
           <el-tooltip content="通知" placement="bottom" effect="light">
-            <el-badge hidden="dotVisible" is-dot class="item">
-              <el-button class="button" icon="el-icon-message-solid" circle/>
+            <el-badge :hidden="!dotVisible" value="new" class="item">
+              <el-button @click="checkReport" class="button" icon="el-icon-message-solid" circle/>
             </el-badge>
           </el-tooltip>
       </el-breadcrumb-item>
@@ -63,6 +63,27 @@
         </el-table-column>
       </el-table>
     </el-dialog>
+<!--    share请求-->
+    <el-dialog :visible.sync="shareVisible" width="40%" append-to-body>
+      <!--      传递用户信息至该组件-->
+      <el-table :data="shareRequests" style="width: 100%" stripe>
+        <el-table-column>
+          <template scope="scope">
+            <el-avatar :src="scope.row.avatar"></el-avatar>
+          </template>
+        </el-table-column>
+        <el-table-column style="width: auto">
+          <template scope="scope">
+            <el-text slot="reference" type="text">{{scope.row.name}}</el-text>
+          </template>
+        </el-table-column>
+        <el-table-column style="width: auto">
+          <template scope="scope">
+            <el-button @click="agree(scope.$index)">agree</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
   </div>
 </template>
 
@@ -70,11 +91,15 @@
 import UserInfo from "@/components/UserInfo/UserInfo";
 import axios from "axios";
 import ChangeInfo from "@/components/UserInfo/ChangeInfo";
+import Bus from "@/assets/Bus";
 export default {
   name: "TopBar",
   components: {ChangeInfo, UserInfo},
   data(){
     return{
+      timer:null,
+      shareRequests:[],
+      shareVisible:false,
       dotVisible:false,
       wantedVisible:false,
       wantedUsers:[],
@@ -98,6 +123,29 @@ export default {
     }
   },
   methods: {
+    agree(index){
+      //userId,name,avatar
+      let fri={
+        "name":this.shareRequests[index].name,
+        "id":this.shareRequests[index].userId,
+        "avatar":this.shareRequests[index].avatar,
+      }
+      Bus.$emit('sendmsg',fri)
+    },
+    checkReport(){
+      this.dotVisible=false
+      let _this=this
+      axios.get("http://127.0.0.1:8888/api/share/getAllReq",{
+        params:{
+          userId:_this.$store.state.info.userId,
+        }
+      }).then(function (res){
+        _this.shareRequests=res.data.data
+        console.log(_this.shareRequests)
+      })
+      this.shareVisible=true
+      alert("check")
+    },
     addFriend(index){
       let _this=this
       axios.get("http://127.0.0.1:8888/api/friend/new",{
@@ -153,12 +201,27 @@ export default {
               console.log("error")
             }
       })
+    },
+    ifReport(){
+      let _this=this
+      axios.get(
+          "http://127.0.0.1:8888/api/share/isShareReq",
+          {params:{
+              userId:_this.$store.state.info.userId,
+            }}).then(function (res){
+          _this.dotVisible=res.data.data
+      }).catch(function (error){
+        console.log(error)
+      })
     }
   },
   computed:{
 
   },
   created() {
+    this.timer = window.setInterval(() => {
+      setTimeout(this.ifReport(), 0);
+    }, 5000);
     let _this=this
     //初始化用户信息
     this.$http.get("http://127.0.0.1:8888/api/user/showUserInfo",{
@@ -175,6 +238,11 @@ export default {
         console.log("error")
       }
     })
+  },
+  destroyed() {
+    //离开页面是销毁
+    clearInterval(this.timer);
+    this.timer = null;
   },
   mounted() {
     this.linkNode.userId=this.$store.state.info.userId
@@ -193,8 +261,9 @@ export default {
   position: relative;
 }
 .item {
-  margin-top: 0px;
+  margin-top: 2px;
   margin-right: 0px;
+  margin-bottom: 20px;
 }
 #avatar{
   left:10px;
@@ -219,8 +288,4 @@ export default {
   padding: 40px 20px;
   box-sizing: border-box;
   margin-right: 20px;}
-.item {
-  margin-top: 0px;
-  margin-right: 0px;
-}
 </style>

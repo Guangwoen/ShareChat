@@ -85,7 +85,7 @@
         </el-table-column>
         <el-table-column>
           <template scope="scope">
-            <el-button slot="reference" type="text" style="font-size: x-large">{{scope.row.username}}</el-button>
+            <el-text slot="reference" type="text" style="font-size: x-large">{{scope.row.name}}</el-text>
           </template>
         </el-table-column>
         <el-table-column>
@@ -140,8 +140,34 @@ export default {
     Bus.$on('sendmsg',user=>{
       this.selectFriend(user)
     })
+    Bus.$on('shareChat',userId=>{
+      this.chatShare(userId)
+    })
   },
   methods: {
+    chatShare(userId){
+      let _this=this
+      axios.get("#",{
+        params:{userId:_this.$store.state.info.userId}
+      }).then(function (res){
+        let result=res.data.data
+        console.log(res.data.data)
+        let fri={
+          "userId":result.userId,
+          "name":result.name,
+          "avatar":result.avatar
+        }
+        _this.$store.state.curFriend=fri
+        _this.messages=result.message//接收消息记录
+        _this.messages.forEach(function (msg){
+          if (msg.userId===_this.$store.state.curFriend.userId)//朋友消息
+            _this.createContent(true, null, msg.messages)
+          else//请求共享者的消息
+            _this.createContent(null, true, msg.messages)
+        })
+        this.initSocket("shared")//初始化websocket
+      })
+    },
     getOnlineUsers(){
       let _this=this
       //获取在线用户
@@ -238,11 +264,40 @@ export default {
       let videoUrl="C:\\Users\\86152\\Desktop\\demo.mp4"
       return isLt2M&&isVideo;
     },
-    //shareChat
-    share(){
-
+    share(index){
+      let _this=this
+      console.log(this.$store.state.friends[index])
+      console.log(_this.$store.state.curFriend)
+      console.log(_this.$store.state.info)
+      axios.get(
+          "http://127.0.0.1:8888/api/share/shareReq", {
+            params:{
+              senderId:_this.$store.state.info.userId,
+              receiverId:_this.$store.state.friends[index].userId,
+              target:_this.$store.state.curFriend.id
+            }}).then(function (res){
+              if(res.data.data===true)
+                _this.$message.success("请求成功")
+              else
+                _this.$message.error("该用户正忙");
+              console.log(res)
+              _this.shareVisible=false
+      }).catch(function (error){
+        console.log(error)
+      })
     },
     shareChat(){
+      let _this=this
+      axios.post("http://127.0.0.1:8888/api/friend/friends",{
+        name:_this.$store.state.info.userId
+      }).then(res=>{
+        _this.$store.state.friends=res.data.data
+        let curFriId=_this.$store.state.curFriend.id
+        let array=_this.$store.state.friends.filter(fri=>fri.userId===null)
+        console.log(array)
+      }).catch(function (error){
+        console.log(error)
+      })
       this.shareVisible=true
     },
     selectFriend(user){
@@ -268,7 +323,7 @@ export default {
       }).catch(function (error){
         console.log(error)
       })
-      this.initSocket()//初始化websocket
+      this.initSocket("only")//初始化websocket
     },
     send() {
       const time = new Date();
@@ -444,13 +499,13 @@ export default {
       })
     },
     //创建websocket
-    initSocket(){
+    initSocket(typeStr){
       let this_ = this
       if (typeof (WebSocket) == "undefined") {
         console.log("您的浏览器不支持WebSocket");
       } else {
         console.log("您的浏览器支持WebSocket");
-        let socketUrl = "ws://localhost:8888/websocket/"+this.$store.state.info.userId+"/2/"+this.$store.state.curFriend.id;
+        let socketUrl = "ws://localhost:8888/websocket/"+this.$store.state.info.userId+"/2/"+this.$store.state.curFriend.id+"/"+typeStr;
         if (socket != null) {
           socket.close();
           socket = null;
