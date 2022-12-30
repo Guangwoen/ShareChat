@@ -87,6 +87,4 @@ public class MessageController {
     public Result<List<Message>> getMyAll() {
         return Result.success(messageService.findAllMsg());
     }
-
-
 }

@@ -38,6 +38,8 @@ public interface LinkNodeRepository extends Neo4jRepository<LinkNode, Long> {
 
     List<LinkNode> getLinkNodesByUserId(String userId);
 
+    LinkNode getLinkNodeByUserId(String userId);
+
     List<LinkNode> getLinkNodesByName(String name);
 
     @Query("match (n: LinkNode) " +
