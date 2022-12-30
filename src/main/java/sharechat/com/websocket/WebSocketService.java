@@ -7,13 +7,11 @@ import sharechat.com.entity.Message;
 import sharechat.com.repository.MessageRepository;
 import sharechat.com.repository.ShareMessageRepository;
 import sharechat.com.util.SnowflakeHelper;
-import sharechat.com.util.oss.AliyunOSSUtil;
 
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.*;
-import java.nio.ByteBuffer;
 import java.util.Collections;
 import java.time.Instant;
 import java.util.concurrent.ConcurrentHashMap;
@@ -66,6 +64,7 @@ public class WebSocketService {
         if(msgList != null && msgList.size() != 0) {
             for(Message m: msgList) {
                 sendMessage(m.getMsgBody(), receiver, sender);
+                m.setIsReceived(true);
                 messageRepository.save(m);
             }
             listOps.trim(makeKey(receiver, sender), 0, 0); // 从缓存中删除
@@ -112,7 +111,7 @@ public class WebSocketService {
             onlyMessage(sender, receiver, message); // 一般消息
         }
         else if(type.equals("shared")) {
-            sharedMessage(); // 共享消息
+            sharedMessage(sender, receiver, message); // 共享消息
         }
         else System.out.println("类型错误");
     }
@@ -146,30 +145,27 @@ public class WebSocketService {
         }
     }
 
-    private void sharedMessage() {
-
-    }
-
-    @OnMessage
-    public void onMessage(@PathParam("sender") String sender,
-                          @PathParam("receiver") String receiver,
-                          byte[] stream,
-                          Session session) throws FileNotFoundException {
-        System.out.println("flag here");
-
-        /* TODO 将图片存储到云端，并存储地址 */
-
+    private void sharedMessage(String sender, String receiver, String message) {
+        Message newMsg = new Message(
+                String.valueOf(idGenerator.snowflakeId()),
+                makeKey(sender, receiver),
+                sender,
+                Instant.now().toString(),
+                message,
+                null
+        );
+        shareMessageRepository.save(newMsg);
+        try {
+            sendMessage(message, sender, receiver);
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @OnError
     public void onError(Session session, Throwable error) throws IOException {
         error.printStackTrace();
-    }
-
-    public void sendMessage(byte[] message, String sender, String receiver) throws IOException {
-        ByteBuffer stream = ByteBuffer.wrap(message);
-        webSocketServices.get(makeKey(receiver, sender))
-                .getBasicRemote().sendBinary(stream);
     }
 
     /**
