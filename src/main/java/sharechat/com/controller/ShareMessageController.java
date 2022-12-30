@@ -2,6 +2,7 @@ package sharechat.com.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import sharechat.com.entity.LinkNode;
 import sharechat.com.service.ShareMessageService;
@@ -20,19 +21,19 @@ public class ShareMessageController {
     }
 
     @GetMapping("/shareReq")
-    public Result<Boolean> sendShareRequest(@PathParam("senderId") String sender,
-                                 @PathParam("receiverId") String receiver,
-                                 @PathParam("target") String target) {
+    public Result<Boolean> sendShareRequest(@RequestParam("senderId") String sender,
+                                 @RequestParam("receiverId") String receiver,
+                                 @RequestParam("target") String target) {
         return Result.success(shareMessageService.sendShareRequest(sender, receiver, target));
     }
 
     @GetMapping("/isShareReq")
-    public Result<Boolean> getShareRequest(@PathParam("userId") String userId) {
+    public Result<Boolean> getShareRequest(@RequestParam("userId") String userId) {
         return Result.success(shareMessageService.getShareRequest(userId));
     }
 
     @GetMapping("/getAllReq")
-    public Result<LinkNode> getAllShareRequest(@PathParam("userId") String userId) {
+    public Result<LinkNode> getAllShareRequest(@RequestParam("userId") String userId) {
         return Result.success(shareMessageService.getAllShareRequest(userId));
     }
 }
