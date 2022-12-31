@@ -68,7 +68,7 @@
              border-bottom: 1px solid #ccc; outline: none; font-size: 25px; resize:none" >
             </textarea>
             <div style="text-align: right; padding-right: 10px">
-              <el-button type="primary" size="mini">endShare</el-button>
+              <el-button type="primary" size="mini" :disabled="!endShare" @click="end_Share">endShare</el-button>
               <el-button type="primary" size="mini" @click="send">发送</el-button>
               <el-button type="success" size="mini" @click="shareChat">ShareChat</el-button>
             </div>
@@ -114,6 +114,7 @@ export default {
   components: {MayLike},
   data() {
     return {
+      endShare:false,
       shareVisible:false,
       circleUrl: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
       user: {},
@@ -146,7 +147,16 @@ export default {
     })
   },
   methods: {
+    end_Share(){
+      alert("hello")
+      this.endShare=false
+      let userId=this.$store.state.info.userId
+      axios.post("http://127.0.0.1:8888/api/share/endShare",userId).then(function (res){
+
+      })
+    },
     chatShare(userId){
+      this.endShare=true
       let _this=this
       axios.get("http://127.0.0.1:8888/api/share/getShareMessage",{
         params:{userId:_this.$store.state.info.userId}
