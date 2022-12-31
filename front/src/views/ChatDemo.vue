@@ -68,6 +68,7 @@
              border-bottom: 1px solid #ccc; outline: none; font-size: 25px; resize:none" >
             </textarea>
             <div style="text-align: right; padding-right: 10px">
+              <el-button type="primary" size="mini">endShare</el-button>
               <el-button type="primary" size="mini" @click="send">发送</el-button>
               <el-button type="success" size="mini" @click="shareChat">ShareChat</el-button>
             </div>
@@ -147,15 +148,15 @@ export default {
   methods: {
     chatShare(userId){
       let _this=this
-      axios.get("#",{
+      axios.get("http://127.0.0.1:8888/api/share/getShareMessage",{
         params:{userId:_this.$store.state.info.userId}
       }).then(function (res){
         let result=res.data.data
-        console.log(res.data.data)
-        let fri={
-          "userId":result.userId,
-          "name":result.name,
-          "avatar":result.avatar
+        console.log(result)
+        /*let fri={
+          "userId":result[0].userId,
+          "name":result[0].userName,
+          "avatar":result[0].avatar
         }
         _this.$store.state.curFriend=fri
         _this.messages=result.message//接收消息记录
@@ -165,7 +166,7 @@ export default {
           else//请求共享者的消息
             _this.createContent(null, true, msg.messages)
         })
-        this.initSocket("shared")//初始化websocket
+        this.initSocket("shared")//初始化websocket*/
       })
     },
     getOnlineUsers(){
@@ -289,9 +290,10 @@ export default {
         name:_this.$store.state.info.userId
       }).then(res=>{
         _this.$store.state.friends=res.data.data
+        //筛去当前聊天用户
         let curFriId=_this.$store.state.curFriend.id
-        let array=_this.$store.state.friends.filter(fri=>fri.userId===null)
-        console.log(array)
+        _this.$store.state.friends=_this.$store.state.friends.filter(fri=>fri.userId!=curFriId)
+        console.log(_this.$store.state.friends)
       }).catch(function (error){
         console.log(error)
       })

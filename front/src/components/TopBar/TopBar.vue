@@ -124,14 +124,10 @@ export default {
   },
   methods: {
     agree(index){
+      let userId=this.$store.state.info.userId
       this.shareVisible=false
       //userId,name,avatar
-      let fri={
-        "name":this.shareRequests[index].name,
-        "id":this.shareRequests[index].userId,
-        "avatar":this.shareRequests[index].avatar,
-      }
-      Bus.$emit('shareChat',fri)
+      Bus.$emit('shareChat',userId)
     },
     checkReport(){
       this.dotVisible=false
@@ -146,6 +142,7 @@ export default {
           avatar:res.data.data.avatar,
           name:res.data.data.name
         }
+        _this.shareRequests=[]
         _this.shareRequests.push(req)
         console.log(req)
         console.log(_this.shareRequests)
