@@ -100,18 +100,30 @@ public class MessageService {
 
     public Message getLastFull(String myId, String friendId) {
         ListOperations<String, Message> listOperations = (ListOperations<String, Message>) redisTemplate.opsForList();
+        Message m1=new Message();
+        Message m2=new Message();
         if(isMissingInRedis(friendId)) {
-            Message m1 = listOperations.leftPop(friendId+"_"+myId);
-            Message m2 = listOperations.leftPop(myId+"_"+friendId);
-            System.out.println("redis:   "+m1+"------"+m2);
-            return m1.getMsgsendTime().compareTo(m2.getMsgsendTime()) < 0 ? m2 : m1;
+            m1 = listOperations.leftPop(myId+"_"+friendId);
+        }else{
+            m1=null;
+        }
+        if(isMissingInRedis(myId)){
+            m2 = listOperations.leftPop(friendId+"_"+myId);
+        }else{
+            m2=null;
+        }
+        if(isMissingInRedis(friendId)||isMissingInRedis(myId)) {
+            if(m1 != null && m2 != null) {
+                return m1.getMsgsendTime().compareTo(m2.getMsgsendTime()) < 0 ? m2 : m1;
+            }
+            if(m1 != null)
+                return m1;
+            return m2;
         }
         //Message m1 = messageRepository.findMessagesByChannelIdLatestFull(myId+"_"+friendId);
         //Message m2 = messageRepository.findMessagesByChannelIdLatestFull(friendId+"_"+myId);
         List<Message> msgs1=messageRepository.findMessagesByChannelId(myId+"_"+friendId);
         List<Message> msgs2=messageRepository.findMessagesByChannelId(friendId+"_"+myId);
-        Message m1=new Message();
-        Message m2=new Message();
         if(msgs1.size()>0) {
             m1 = msgs1.get(0);
         }else{
