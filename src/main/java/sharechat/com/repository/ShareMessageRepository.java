@@ -10,6 +10,6 @@ import java.util.List;
 
 @Repository
 public interface ShareMessageRepository extends CassandraRepository<ShareMessage, String> {
-    @Query("select * from sharechatting where channelid = ?0 and isrecived = false ALLOW FILTRING")
+    @Query("select * from sharechatting where channelid = ?0 and isreceived = false ALLOW FILTRING")
     List<ShareMessage> findAllUnloadedMessages(String channelId);
 }
