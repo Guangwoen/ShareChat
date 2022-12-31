@@ -13,6 +13,7 @@ import sharechat.com.repository.ShareMessageRepository;
 import sharechat.com.repository.UserRepository;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -69,6 +70,14 @@ public class ShareMessageService {
     public List<Map<String,String>> getChannelMessages(String userId){
         String sender=redisTemplate.opsForValue().get(prefix+userId);
         String target=redisTemplate.opsForValue().get(userId+"_"+sender+suffix);
+        List<Map<String,String>> returnList=new ArrayList<>();
+        Map<String,String> firstMap=new HashMap<>();
+        firstMap.put("userId",target);
+        if(userRepository.findById(target).isPresent()){
+            UserInfo targetInfo=userRepository.findById(target).get();
+            firstMap.put("userName",targetInfo.getName());
+            firstMap.put("avatar",targetInfo.getHeadPicture());
+        }
         List<Map<String,String>> content=messageService.getRecentMessages(sender,target);
         for(Map<String,String> m:content){
             if(userRepository.findById(m.get("userId")).isPresent()){
@@ -77,7 +86,9 @@ public class ShareMessageService {
                 m.put("avatar",userInfo.getHeadPicture());
             }
         }
-        return content;
+        returnList.add(firstMap);
+        returnList.addAll(content);
+        return returnList;
     }
 
     public boolean endShare(String userId){
