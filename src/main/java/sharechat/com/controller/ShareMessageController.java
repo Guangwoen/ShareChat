@@ -42,6 +42,7 @@ public class ShareMessageController {
 
     @PostMapping("/endShare")
     public Result<Boolean> endShare(@RequestBody Map info){
+        System.out.println(info.toString());
         String userId=(String)info.get("userId");
         return Result.success(shareMessageService.endShare(userId));
     }

@@ -149,13 +149,18 @@ export default {
   methods: {
     end_Share(){
       alert("hello")
+      let _this=this
       this.endShare=false
-      let userId=this.$store.state.info.userId
-      axios.post("http://127.0.0.1:8888/api/share/endShare",userId).then(function (res){
-
-      })
+      this.$http.post("http://127.0.0.1:8888/api/share/endShare", {
+        userId:_this.$store.state.info.userId
+      }).then(function (res){
+        console.log(res)
+      }).catch(error=>console.log(error))
+      this.$store.state.curFriend={}
+      this.content=''
     },
     chatShare(userId){
+      this.content=''
       this.endShare=true
       let _this=this
       axios.get("http://127.0.0.1:8888/api/share/getShareMessage",{
@@ -163,20 +168,20 @@ export default {
       }).then(function (res){
         let result=res.data.data
         console.log(result)
-        /*let fri={
-          "userId":result[0].userId,
-          "name":result[0].userName,
-          "avatar":result[0].avatar
+        let fri={
+          id:result[0].userId,
+          name:result[0].userName,
+          avatar:result[0].avatar
         }
         _this.$store.state.curFriend=fri
-        _this.messages=result.message//接收消息记录
-        _this.messages.forEach(function (msg){
-          if (msg.userId===_this.$store.state.curFriend.userId)//朋友消息
-            _this.createContent(true, null, msg.messages)
+        console.log(_this.$store.state.curFriend)
+        for (let i = 1; i < result.length; i++) {
+          if (result[i].userId===_this.$store.state.curFriend.userId)//朋友消息
+            _this.createContent(true, null, result[i].messages)
           else//请求共享者的消息
-            _this.createContent(null, true, msg.messages)
-        })
-        this.initSocket("shared")//初始化websocket*/
+            _this.createContent(null, true, result[i].messages)
+        }
+        _this.initSocket("shared")//初始化websocket*/
       })
     },
     getOnlineUsers(){
