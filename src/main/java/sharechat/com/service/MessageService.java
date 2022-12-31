@@ -102,17 +102,17 @@ public class MessageService {
         ListOperations<String, Message> listOperations = (ListOperations<String, Message>) redisTemplate.opsForList();
         Message m1=new Message();
         Message m2=new Message();
-        if(isMissingInRedis(friendId)) {
+        if(isMissingInRedisFull(myId+"_"+friendId)) {
             m1 = listOperations.leftPop(myId+"_"+friendId);
         }else{
             m1=null;
         }
-        if(isMissingInRedis(myId)){
+        if(isMissingInRedisFull(friendId+"_"+myId)){
             m2 = listOperations.leftPop(friendId+"_"+myId);
         }else{
             m2=null;
         }
-        if(isMissingInRedis(friendId)||isMissingInRedis(myId)) {
+        if(isMissingInRedisFull(friendId+"_"+myId)||isMissingInRedisFull(myId+"_"+friendId)) {
             if(m1 != null && m2 != null) {
                 return m1.getMsgsendTime().compareTo(m2.getMsgsendTime()) < 0 ? m2 : m1;
             }
